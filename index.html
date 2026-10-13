@@ -118,7 +118,7 @@ section{padding-block:72px}
 .price .cur{font-weight:700;color:var(--muted)}
 .price .val{font-family:var(--display);font-weight:700;font-size:44px;letter-spacing:-.02em}
 .price .per{color:var(--muted)}
-.note{font-size:14px;color:var(--muted);margin-top:-10px;min-height:2.6em}
+.note{font-size:14px;color:var(--muted);margin-top:-10px;min-height:4em}
 .note strong{color:var(--ink)}
 .plan ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:15.5px}
 .plan li{display:flex;gap:10px}
@@ -250,6 +250,7 @@ footer a:hover{text-decoration:underline}
         <details><summary>Como recebo o acesso depois de pagar?</summary><p>Quando o Asaas confirma o pagamento, enviamos um link pessoal para você criar a conta, por e-mail e WhatsApp. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar.</p></details>
         <details><summary>Preciso da API oficial do WhatsApp?</summary><p>Não. Você pode conectar pelo QR Code, como no WhatsApp Web, ou pela API oficial da Meta. Dá para misturar os dois, até 3 números.</p></details>
         <details><summary>O que acontece se o pagamento atrasar?</summary><p>Você tem 2 dias de tolerância com tudo funcionando e avisos no sistema. Depois disso a conta fica só para consulta até o pagamento ser feito. Nada é apagado.</p></details>
+        <details><summary>Como ganho créditos de IA extras?</summary><p>Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro e +4.450 no Black. Vale no mensal e no anual. No cartão, a cobrança cai no dia e o bônus vem automático.</p></details>
         <details><summary>E se os créditos de IA acabarem?</summary><p>Os créditos renovam todo dia 1º. Se precisar de mais, você pode usar a sua própria chave do Google Gemini, e aí o uso não desconta dos créditos do plano.</p></details>
         <details><summary>Posso cancelar?</summary><p>Pode, a qualquer momento. O acesso continua até o fim do período já pago, e você pode exportar seus dados antes de sair.</p></details>
         <details><summary>Como ficam os dados dos meus clientes?</summary><p>Ficam isolados na sua empresa, com acesso só da sua equipe. Seguimos a LGPD: veja os <a id="faq-terms" href="#">Termos de Uso</a> e a <a id="faq-privacy" href="#">Política de Privacidade</a>.</p></details>
@@ -274,11 +275,11 @@ footer a:hover{text-decoration:underline}
 // ===== Ajuste aqui quando o CRM mudar de endereço ou os links do Asaas mudarem =====
 var CRM_URL = "https://fluxo-vii-crm--gen-lang-client-0285512077.us-east4.hosted.app";
 var PLANS = [
-  { id: "start", name: "Magnet Start", who: "Para quem atende sozinho ou em dupla", users: "3 usuários (1 administrador + 2)", ai: "300 créditos de IA por mês",
+  { id: "start", name: "Magnet Start", who: "Para quem atende sozinho ou em dupla", users: "3 usuários (1 administrador + 2)", ai: "300 créditos de IA por mês", bonus: 1100,
     mensal: { price: 66.90, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 50.90, total: 610.80, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
-  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", who: "Para criadores com closers e clínicas pequenas", users: "7 usuários (2 administradores + 5)", ai: "1.000 créditos de IA por mês",
+  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", who: "Para criadores com closers e clínicas pequenas", users: "7 usuários (2 administradores + 5)", ai: "1.000 créditos de IA por mês", bonus: 1650,
     mensal: { price: 99.90, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 76.40, total: 916.80, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
-  { id: "black", name: "Magnet Black", who: "Para operações com equipe grande", users: "20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês",
+  { id: "black", name: "Magnet Black", who: "Para operações com equipe grande", users: "20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4450,
     mensal: { price: 266.90, url: "https://www.asaas.com/c/oc571ffclgrtq0ao" }, anual: { perMonth: 203.90, total: 2446.80, url: "https://www.asaas.com/c/q7s0xk0qcyp9nnbo" } }
 ];
 // ===================================================================================
@@ -296,9 +297,8 @@ function renderPlans() {
   box.innerHTML = PLANS.map(function (p) {
     var m = cycle === "mensal";
     var val = m ? p.mensal.price : p.anual.perMonth;
-    var note = m
-      ? "Pagando até o vencimento: <strong>R$ " + brl(p.mensal.price * 0.9) + "</strong> por mês (10% de desconto)."
-      : "<strong>R$ " + brl(p.anual.total) + "</strong> cobrados uma vez por ano.";
+    var bonus = "Pagando até o vencimento: <strong>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA</strong> por mês.";
+    var note = m ? bonus : "<strong>R$ " + brl(p.anual.total) + "</strong> cobrados uma vez por ano. " + bonus;
     var url = m ? p.mensal.url : p.anual.url;
     return '<article class="plan' + (p.tag ? " pro" : "") + '">' +
       (p.tag ? '<span class="tag">' + p.tag + "</span>" : "") +
