@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Planos e valores · FLUXO VIII</title>
+<meta name="description" content="Planos do FLUXO VIII CRM: Magnet Start, Pro e Black, mensal ou anual.">
+<meta property="og:title" content="FLUXO VIII CRM">
+<meta property="og:description" content="Nenhum contato fica sem resposta. Funil automático, Atendente IA e painel da equipe.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://crmfluxoviii.tech/og-image.png">
+<meta name="theme-color" content="#0B1F4A">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" type="image/png" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/#inicio" aria-label="FLUXO VIII CRM, início"><img class="logo-light" src="logo-mark.png" alt="" width="70" height="30"><img class="logo-dark" src="logo-mark-dark.png" alt="" width="70" height="30"><span>FLUXO <em>VIII</em></span></a>
+    <nav class="nav" aria-label="Seções">
+      <a href="/#como-funciona">Como funciona</a>
+      <a href="/#recursos">Recursos</a>
+      <a href="/#seguranca">Segurança</a>
+      <a href="/#planos">Planos</a>
+      <a href="/#perguntas">Perguntas</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn" data-login href="#">Entrar</a>
+      <a class="btn gold" href="/#contato" data-subject="demonstracao">Demonstração</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap page-head">
+    <h1>Planos e valores</h1>
+    <p>Todos os planos têm todos os recursos do FLUXO VIII. O que muda é o tamanho da equipe e os créditos de IA. Escolha o plano e, em seguida, se prefere pagar por mês ou por ano.</p>
+  </div>
+  <section id="planos">
+    <div class="wrap">
+      <div class="plans" id="plans"></div>
+      <p class="pay">O pagamento acontece na página segura do Asaas, com Pix, boleto ou cartão. O FLUXO VIII não recebe nem guarda os dados do seu cartão. Assim que o pagamento é confirmado, o link para criar sua conta chega no seu e-mail e no seu WhatsApp. A assinatura renova sozinha e você pode cancelar quando quiser.</p>
+      <a class="back" href="/#contato" data-subject-link="especialista">Ficou com dúvida? Fale com um especialista</a>
+    </div>
+  </section>
+</main>
+
+<dialog id="cycle" aria-labelledby="cycle-title">
+  <div class="dlg">
+    <button type="button" class="x" id="c-close" aria-label="Fechar">×</button>
+    <h3 id="cycle-title">Como prefere pagar?</h3>
+    <label class="opt"><input type="radio" name="cycle" value="mensal" checked><span><b>Mensal</b><span class="big" id="c-m-price"></span><small id="c-m-note"></small></span></label>
+    <label class="opt"><input type="radio" name="cycle" value="anual"><span><b>Anual</b><span class="save">economize 23%</span><span class="big" id="c-a-price"></span><small id="c-a-note"></small></span></label>
+    <p class="secure">Você vai para a página segura do Asaas para pagar com Pix, boleto ou cartão.</p>
+    <div class="row">
+      <button type="button" class="textbtn" id="c-talk">Prefiro falar com um especialista</button>
+      <button type="button" class="btn gold" id="c-go">Continuar para o pagamento</button>
+    </div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 FLUXO VIII CRM</span>
+    <nav aria-label="Documentos">
+      <a data-crm="/termos" href="#">Termos de Uso</a>
+      <a data-crm="/privacidade" href="#">Política de Privacidade</a>
+      <a data-crm="/dpa" href="#">Tratamento de Dados</a>
+      <a href="/#contato" data-subject="especialista">Fale conosco</a>
+      <a data-login href="#">Entrar no CRM</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="site.js" defer></script>
+</body>
+</html>

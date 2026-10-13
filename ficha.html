@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha de interesse · FLUXO VIII</title>
+<meta name="description" content="Ficha de interesse do FLUXO VIII CRM.">
+<meta property="og:title" content="FLUXO VIII CRM">
+<meta property="og:description" content="Nenhum contato fica sem resposta. Funil automático, Atendente IA e painel da equipe.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://crmfluxoviii.tech/og-image.png">
+<meta name="theme-color" content="#0B1F4A">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" type="image/png" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/#inicio" aria-label="FLUXO VIII CRM, início"><img class="logo-light" src="logo-mark.png" alt="" width="70" height="30"><img class="logo-dark" src="logo-mark-dark.png" alt="" width="70" height="30"><span>FLUXO <em>VIII</em></span></a>
+    <nav class="nav" aria-label="Seções">
+      <a href="/#como-funciona">Como funciona</a>
+      <a href="/#recursos">Recursos</a>
+      <a href="/#seguranca">Segurança</a>
+      <a href="/#planos">Planos</a>
+      <a href="/#perguntas">Perguntas</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn" data-login href="#">Entrar</a>
+      <a class="btn gold" href="/#contato" data-subject="demonstracao">Demonstração</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap page-head narrow">
+    <h1>Ficha de interesse</h1>
+    <p>Leva 1 minuto. Com essas respostas, um especialista do FLUXO VIII te chama no WhatsApp já sabendo como ajudar.</p>
+  </div>
+  <section id="contato">
+    <div class="wrap narrow">
+      <form class="card" id="lead-form" data-kind="ficha" novalidate>
+        <div class="fld"><label for="f-name">Nome completo</label><input id="f-name" name="name" autocomplete="name" maxlength="120" required></div>
+        <div class="grid2">
+          <div class="fld"><label for="f-phone">Telefone (WhatsApp com DDD)</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" required></div>
+          <div class="fld"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="160" required></div>
+        </div>
+        <div class="fld"><label for="f-niche">Ramo de atividade</label><select id="f-niche" name="niche" required></select></div>
+        <div class="fld cond" id="other-wrap"><label for="f-niche-other">Qual é o seu ramo?</label><input id="f-niche-other" name="nicheOther" maxlength="80"></div>
+        <fieldset class="fld">
+          <legend>Tem funcionários?</legend>
+          <div class="seg">
+            <label><input type="radio" name="hasEmployees" value="sim">Sim</label>
+            <label><input type="radio" name="hasEmployees" value="nao">Não, trabalho sozinho(a)</label>
+          </div>
+        </fieldset>
+        <div class="fld cond" id="emp-wrap"><label for="f-employees">Quantos?</label><input id="f-employees" name="employees" type="number" inputmode="numeric" min="1" max="10000"></div>
+        <fieldset class="fld">
+          <legend>Já tentou resolver esse problema antes?</legend>
+          <div class="seg">
+            <label><input type="radio" name="triedBefore" value="sim">Sim</label>
+            <label><input type="radio" name="triedBefore" value="nao">Não, é a primeira vez</label>
+          </div>
+        </fieldset>
+        <div class="fld cond" id="tried-wrap"><label for="f-tried">Como? O que usou e o que não deu certo? <small>(opcional)</small></label><textarea id="f-tried" name="triedHow" maxlength="600" placeholder="Ex.: planilha, outro CRM, só o WhatsApp no celular"></textarea></div>
+        <div class="hp" aria-hidden="true"><label for="f-website">Não preencha este campo</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <label class="consent"><input type="checkbox" id="f-consent" required><span>Li e concordo com a <a data-crm="/privacidade" href="#" target="_blank" rel="noopener">Política de Privacidade</a> e autorizo o contato pelo WhatsApp e e-mail sobre o FLUXO VIII.</span></label>
+        <p class="msg" id="lead-msg" role="status" aria-live="polite"></p>
+        <button class="btn gold" type="submit" id="lead-submit">Enviar ficha</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 FLUXO VIII CRM</span>
+    <nav aria-label="Documentos">
+      <a data-crm="/termos" href="#">Termos de Uso</a>
+      <a data-crm="/privacidade" href="#">Política de Privacidade</a>
+      <a data-crm="/dpa" href="#">Tratamento de Dados</a>
+      <a href="/#contato" data-subject="especialista">Fale conosco</a>
+      <a data-login href="#">Entrar no CRM</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="site.js" defer></script>
+</body>
+</html>
