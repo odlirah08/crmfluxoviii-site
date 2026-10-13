@@ -444,18 +444,45 @@ if (form) {
     for (var i = 0; i < 26; i++) dots.push({ p: i % paths.length, t: Math.random(), v: 0.0018 + Math.random() * 0.0026 });
   }
   function pt(p, t) { var a = 1 - t; return [a * a * p.x0 + 2 * a * t * p.cx + t * t * p.x1, a * a * p.y0 + 2 * a * t * p.cy + t * t * p.y1]; }
+  // Anel do núcleo: vai ficando dourado conforme os contatos chegam; cheio, brilha e recomeça
+  var fill = 0, glow = 0;
+  function ring(field, gold) {
+    var cx = core[0] * W, cy = core[1] * H, r = 0.16 * W + 7, lw = Math.max(8, W * 0.022);
+    ctx.lineCap = "round";
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = field;
+    ctx.globalAlpha = 0.55;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 1;
+    if (fill > 0) {
+      ctx.strokeStyle = gold;
+      if (glow > 0) { ctx.shadowColor = gold; ctx.shadowBlur = 18 * glow; }
+      ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, fill)); ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+  }
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var field = css("--field"), gold = css("--gold"), navy = css("--navy");
     ctx.lineWidth = 1.5;
     paths.forEach(function (p) { ctx.strokeStyle = field; ctx.beginPath(); ctx.moveTo(p.x0, p.y0); ctx.quadraticCurveTo(p.cx, p.cy, p.x1, p.y1); ctx.stroke(); });
+    ring(field, gold);
     dots.forEach(function (d) { var q = pt(paths[d.p], d.t); ctx.fillStyle = d.t > 0.82 ? navy : gold; ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, Math.PI * 2); ctx.fill(); });
   }
   function tick() {
-    dots.forEach(function (d) { d.t += d.v * (0.6 + d.t * 1.6); if (d.t >= 1) { d.t = 0; d.p = Math.floor(Math.random() * paths.length); } });
+    dots.forEach(function (d) {
+      d.t += d.v * (0.6 + d.t * 1.6);
+      if (d.t >= 1) {
+        d.t = 0; d.p = Math.floor(Math.random() * paths.length);
+        if (glow <= 0) fill = Math.min(1, fill + 1 / 36); // cada contato que chega enche um pouco o anel
+      }
+    });
+    if (fill >= 1 && glow <= 0) glow = 1;          // completou: brilha
+    if (glow > 0) { glow -= 0.008; if (glow <= 0) { glow = 0; fill = 0; } }
     draw();
     if (!reduce) requestAnimationFrame(tick);
   }
+  if (reduce) fill = 0.7;
   build(); draw();
   if (!reduce) requestAnimationFrame(tick);
   window.addEventListener("resize", function () { build(); draw(); });
