@@ -7,12 +7,15 @@ var CRM_URL = "https://fluxo-vii-crm--gen-lang-client-0285512077.us-east4.hosted
 
 // ===== Planos e links de pagamento do Asaas =====
 var PLANS = [
-  { id: "start", name: "Magnet Start", users: "3 usuários (1 administrador + 2)", ai: "300 créditos de IA por mês", bonus: 1100,
+  { id: "start", name: "Magnet Start", users: "Até 2 usuários (1 administrador + 1)", ai: "300 créditos de IA por mês", bonus: 1100,
     mensal: { price: 66.90, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 50.90, total: 610.80, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
-  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", users: "7 usuários (2 administradores + 5)", ai: "1.000 créditos de IA por mês", bonus: 1650,
+  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
     mensal: { price: 99.90, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 76.40, total: 916.80, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
-  { id: "black", name: "Magnet Black", users: "20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4450,
-    mensal: { price: 266.90, url: "https://www.asaas.com/c/oc571ffclgrtq0ao" }, anual: { perMonth: 203.90, total: 2446.80, url: "https://www.asaas.com/c/q7s0xk0qcyp9nnbo" } }
+  // Gold: colar aqui os links do Asaas quando forem criados. Sem link, o botão leva para falar com um especialista.
+  { id: "gold", name: "Magnet Gold", users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
+    mensal: { price: 167.00, url: "" }, anual: { perMonth: 127.90, total: 1534.80, url: "" } },
+  { id: "black", name: "Magnet Black", users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
+    mensal: { price: 297.00, url: "https://www.asaas.com/c/oc571ffclgrtq0ao" }, anual: { perMonth: 226.90, total: 2722.80, url: "https://www.asaas.com/c/q7s0xk0qcyp9nnbo" } }
 ];
 
 // ===== Textos por área (as mesmas áreas do CRM) =====
@@ -28,7 +31,7 @@ var NICHES = {
     ai: "Responde dúvidas nos horários que você escolher, agenda o atendimento e chama a equipe quando o assunto pede uma pessoa.",
     team: "Sua equipe assume",
     track: "Faturamento, conversão, tempo de resposta e desempenho da equipe. Mande o painel para o sócio sem dar acesso ao CRM.",
-    who: ["Para quem atende sozinho ou em dupla", "Para equipes de até 7 pessoas", "Para operações com até 20 pessoas"],
+    who: ["Para quem atende sozinho ou em dupla", "Para equipes de 2 a 4 pessoas", "Para equipes de 3 a 6 pessoas", "Para operações com mais de 10 pessoas"],
     back: "{C} que volta depois de comprar ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada empresa só vê os próprios dados."
   },
@@ -42,7 +45,7 @@ var NICHES = {
     ai: "Responde dúvidas com acolhimento, oferece horários de sessão e chama você quando o assunto pede o terapeuta. Nunca faz diagnóstico por mensagem.",
     team: "Você ou a secretária assume",
     track: "Sessões da semana, pagamentos em aberto e pacientes que não voltaram, tudo no mesmo painel.",
-    who: ["Para quem atende sozinho ou com uma secretária", "Para consultórios com mais de um terapeuta", "Para clínicas e institutos com equipe grande"],
+    who: ["Para quem atende sozinho ou com uma secretária", "Para consultórios com 2 a 4 pessoas", "Para clínicas com até 6 terapeutas e recepção", "Para clínicas e institutos com equipe grande"],
     back: "Paciente que retoma depois de um tempo ganha um card novo, ligado ao histórico anterior.",
     privacy: "Sigilo do consultório: cada pessoa da equipe vê só o que você liberar."
   },
@@ -56,7 +59,7 @@ var NICHES = {
     ai: "Tira dúvidas, agenda a avaliação e confirma a consulta. Chama a recepção quando o paciente pede orçamento.",
     team: "A recepção assume",
     track: "Avaliações, orçamentos aprovados, faturamento e pacientes que não voltaram para continuar o tratamento.",
-    who: ["Para o dentista que atende com uma recepção", "Para clínicas com recepção e vários dentistas", "Para redes e clínicas grandes"],
+    who: ["Para o dentista que atende com uma recepção", "Para clínicas com 2 a 4 pessoas", "Para clínicas com recepção e até 6 pessoas", "Para redes e clínicas grandes"],
     back: "Paciente que volta para um novo tratamento ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   },
@@ -70,7 +73,7 @@ var NICHES = {
     ai: "Tira dúvidas, agenda consultas e confirma horários. Não dá orientação clínica: conduz o paciente para a consulta.",
     team: "A recepção assume",
     track: "Consultas, faturamento, retornos pendentes e tempo de resposta da recepção.",
-    who: ["Para o profissional que atende com uma secretária", "Para clínicas com recepção e vários profissionais", "Para clínicas multidisciplinares e redes"],
+    who: ["Para o profissional que atende com uma secretária", "Para clínicas com 2 a 4 pessoas", "Para clínicas com recepção e até 6 pessoas", "Para clínicas multidisciplinares e redes"],
     back: "Paciente que volta para um novo tratamento ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   },
@@ -84,7 +87,7 @@ var NICHES = {
     ai: "Entende o que o cliente procura, marca a reunião de briefing e chama você na hora da proposta.",
     team: "Você assume a proposta",
     track: "Propostas enviadas, projetos fechados, o que falta receber e de onde vêm os clientes.",
-    who: ["Para escritórios enxutos", "Para escritórios com equipe de projeto", "Para escritórios grandes e construtoras"],
+    who: ["Para escritórios enxutos", "Para escritórios com 2 a 4 pessoas", "Para escritórios com equipe de projeto de até 6", "Para escritórios grandes e construtoras"],
     back: "Cliente que volta para um novo projeto ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   },
@@ -98,7 +101,7 @@ var NICHES = {
     ai: "Responde na hora, qualifica o lead e agenda a call com o closer certo.",
     team: "O closer fecha",
     track: "Faturamento, conversão, tempo de resposta e ranking dos closers. Mande o painel para o sócio sem dar acesso ao CRM.",
-    who: ["Para quem vende sozinho ou com um closer", "Para criadores com time de closers", "Para operações com equipe comercial grande"],
+    who: ["Para quem vende sozinho ou com um closer", "Para times de 2 a 4 pessoas", "Para times de até 6 closers e SDRs", "Para operações com equipe comercial grande"],
     back: "Quem já comprou e volta para outro produto ganha um card novo de recompra.",
     privacy: "Cada closer vê só as abas que você liberar."
   },
@@ -112,7 +115,7 @@ var NICHES = {
     ai: "Responde dúvidas nos horários que você escolher, agenda o atendimento e chama a equipe quando precisa de uma pessoa.",
     team: "Sua equipe assume",
     track: "Propostas, contratos fechados, cobranças em aberto e desempenho da equipe.",
-    who: ["Para quem atende sozinho ou em dupla", "Para escritórios com equipe de até 7 pessoas", "Para operações com até 20 pessoas"],
+    who: ["Para quem atende sozinho ou em dupla", "Para escritórios com 2 a 4 pessoas", "Para escritórios com até 6 pessoas", "Para operações com mais de 10 pessoas"],
     back: "Cliente que volta para um novo serviço ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   }
@@ -228,7 +231,7 @@ function renderPlans() {
       '<div class="price"><span class="cur">R$</span><span class="val">' + brl(p.mensal.price) + '</span><span class="per">/mês</span></div>' +
       '<p class="alt">ou <strong>R$ ' + brl(p.anual.perMonth) + "/mês</strong> no plano anual</p>" +
       "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>Todos os recursos do FLUXO VIII</li></ul>" +
-      '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '">Assinar ' + esc(p.name) + "</button>" +
+      '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + "</button>" +
       "</article>";
   }).join("");
 }
@@ -258,7 +261,13 @@ $("c-go").addEventListener("click", function () {
   if (!chosen) return;
   var cycle = dlg.querySelector('input[name="cycle"]:checked').value;
   var url = cycle === "anual" ? chosen.anual.url : chosen.mensal.url;
-  if (!isAsaas(url)) return; // só abre links de pagamento do Asaas
+  if (!isAsaas(url)) { // plano sem link de pagamento ainda: fala com um especialista
+    var plan = chosen.id;
+    closeCycle();
+    if (form && form.querySelector('input[name="subject"]')) goContact("especialista", plan);
+    else location.href = "/?assunto=especialista&plano=" + encodeURIComponent(plan) + "#contato";
+    return;
+  }
   location.href = url;
 });
 $("c-talk").addEventListener("click", function () {
@@ -277,7 +286,7 @@ function renderFaq() {
     ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site e um especialista mostra o FLUXO VIII funcionando com o funil da sua área."],
     ["Como recebo o acesso depois de pagar?", "Quando o Asaas confirma o pagamento, enviamos um link pessoal para você criar a conta, por e-mail e WhatsApp. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
     ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza 23%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
-    ["Como ganho créditos de IA extras?", "Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro e +4.450 no Black. No cartão, a cobrança cai no dia e o bônus vem automático."],
+    ["Como ganho créditos de IA extras?", "Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro, +2.800 no Gold e +4.950 no Black. No cartão, a cobrança cai no dia e o bônus vem automático."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você pode conectar pelo QR Code, como no WhatsApp Web, ou pela API oficial da Meta. Dá para usar os dois, até 3 números."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e o que ela pode fazer, e ela para de responder quando alguém da equipe assume a conversa."],
     ["É seguro?", "Sim. Cada empresa só vê os próprios dados, cada pessoa da equipe vê só o que o administrador liberar, todo acesso é criptografado e o pagamento acontece fora do CRM, no Asaas."],
