@@ -183,7 +183,17 @@ function renderSections(n) {
     [n.team, n.roles + ": cada pessoa vê só o que precisa. Quem responde primeiro fica como responsável pelo " + n.c + "."],
     ["Você acompanha", n.track]
   ];
-  $("steps").innerHTML = steps.map(function (s) { return "<li><h3>" + esc(s[0]) + "</h3><p>" + esc(s[1]) + "</p></li>"; }).join("");
+  var STEP_ICONS = [
+    '<path d="M4 5h16v11H8l-4 4z"/><path d="M8 10h8"/>',
+    '<path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+    '<circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A4.5 4.5 0 0 1 21 18.5"/>',
+    '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>'
+  ];
+  $("steps").innerHTML = steps.map(function (s, i) {
+    return '<li class="pstep"><span class="pnode" aria-hidden="true"><svg viewBox="0 0 24 24">' + STEP_ICONS[i] + '</svg></span>' +
+      '<span class="pnum" aria-hidden="true">0' + (i + 1) + '</span><h3>' + esc(s[0]) + "</h3><p>" + esc(s[1]) + "</p></li>";
+  }).join("");
+  if ($("how-cta-text")) $("how-cta-text").textContent = fill("Veja esse fluxo funcionando com o funil da sua área e os seus {cs}.", n);
 
   // Linha do tempo: uma mensagem do "oi" até a venda (storytelling dos recursos)
   var flow = [
@@ -526,13 +536,39 @@ if (form) {
       ctx.shadowBlur = 0;
     }
   }
+  // Ondas que saem do núcleo quando um contato chega
+  var waves = [];
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var field = css("--field"), gold = css("--gold"), navy = css("--navy");
+    var cx = core[0] * W, cy = core[1] * H;
     ctx.lineWidth = 1.5;
-    paths.forEach(function (p) { ctx.strokeStyle = field; ctx.beginPath(); ctx.moveTo(p.x0, p.y0); ctx.quadraticCurveTo(p.cx, p.cy, p.x1, p.y1); ctx.stroke(); });
+    paths.forEach(function (p) {
+      var g = ctx.createLinearGradient(p.x0, p.y0, p.x1, p.y1);
+      g.addColorStop(0, field); g.addColorStop(1, gold);
+      ctx.strokeStyle = g; ctx.globalAlpha = 0.55;
+      ctx.beginPath(); ctx.moveTo(p.x0, p.y0); ctx.quadraticCurveTo(p.cx, p.cy, p.x1, p.y1); ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    waves.forEach(function (w) {
+      ctx.strokeStyle = gold; ctx.globalAlpha = Math.max(0, 1 - w.r) * 0.5; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, 0.17 * W + w.r * 0.22 * W, 0, Math.PI * 2); ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
     ring(field, gold);
-    dots.forEach(function (d) { var q = pt(paths[d.p], d.t); ctx.fillStyle = d.t > 0.82 ? navy : gold; ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, Math.PI * 2); ctx.fill(); });
+    dots.forEach(function (d) {
+      var p = paths[d.p];
+      // rastro: 5 pontos atrás com brilho decrescente
+      for (var k = 5; k >= 0; k--) {
+        var t = Math.max(0, d.t - k * 0.012), q = pt(p, t);
+        ctx.globalAlpha = k === 0 ? 1 : (1 - k / 6) * 0.35;
+        ctx.fillStyle = gold;
+        if (k === 0) { ctx.shadowColor = gold; ctx.shadowBlur = 10; }
+        ctx.beginPath(); ctx.arc(q[0], q[1], k === 0 ? 4 : 3, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    });
+    ctx.globalAlpha = 1;
   }
   function tick() {
     dots.forEach(function (d) {
@@ -540,8 +576,11 @@ if (form) {
       if (d.t >= 1) {
         d.t = 0; d.p = Math.floor(Math.random() * paths.length);
         if (glow <= 0) fill = Math.min(1, fill + 1 / 36); // cada contato que chega enche um pouco o anel
+        if (waves.length < 4) waves.push({ r: 0 });
       }
     });
+    waves.forEach(function (w) { w.r += 0.012; });
+    waves = waves.filter(function (w) { return w.r < 1; });
     if (fill >= 1 && glow <= 0) glow = 1;          // completou: brilha
     if (glow > 0) { glow -= 0.008; if (glow <= 0) { glow = 0; fill = 0; } }
     draw();
@@ -551,4 +590,30 @@ if (form) {
   build(); draw();
   if (!reduce) requestAnimationFrame(tick);
   window.addEventListener("resize", function () { build(); draw(); });
+})();
+
+// ===== Avisos ao vivo no herói (ilustração do que acontece no CRM) =====
+(function () {
+  var box = $("hero-toast"), t = $("toast-title"), sub = $("toast-sub");
+  if (!box || !t || !sub) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var i = 0;
+  function items() {
+    var n = NICHES[current] || NICHES.geral;
+    return [
+      [fill("Novo {c} no funil", n), "WhatsApp · agora"],
+      ["Respondido pela IA", "em poucos segundos"],
+      ["Horário marcado na agenda", "lembrete agendado"],
+      ["Venda registrada", "entrou no painel"],
+      [fill("Novo {c} no funil", n), "Instagram · agora"]
+    ];
+  }
+  function show() {
+    var list = items(), it = list[i % list.length];
+    box.classList.add("out");
+    setTimeout(function () { t.textContent = it[0]; sub.textContent = it[1]; box.classList.remove("out"); }, reduce ? 0 : 350);
+    i++;
+  }
+  show();
+  if (!reduce) setInterval(show, 2800);
 })();

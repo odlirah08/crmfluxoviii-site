@@ -53,6 +53,7 @@
           <a class="btn" href="#contato" data-subject="demonstracao">Agendar demonstração</a>
           <a class="link" data-login href="#">Já sou cliente</a>
         </div>
+        <p class="hero-note"><span class="pulse-dot" aria-hidden="true"></span> Comece hoje · <strong>23% off</strong> no plano anual</p>
         <ul class="facts" aria-label="Destaques">
           <li>Até 3 números de WhatsApp</li>
           <li>Atendente IA</li>
@@ -61,6 +62,8 @@
         </ul>
       </div>
       <div class="field" aria-hidden="true">
+        <span class="hud hud-tl">FLUXO • ao vivo</span>
+        <span class="toast" id="hero-toast"><i></i><b id="toast-title">Novo contato no funil</b><small id="toast-sub">WhatsApp · agora</small></span>
         <canvas id="field"></canvas>
         <span class="chip c1"><i></i>WhatsApp</span>
         <span class="chip c2"><i></i>Instagram</span>
@@ -72,13 +75,20 @@
     </div>
   </div>
 
-  <section id="como-funciona">
+  <section id="como-funciona" class="how">
     <div class="wrap">
       <div class="head">
         <h2 id="how-title">Do primeiro "oi" ao pagamento, no mesmo lugar</h2>
         <p id="how-sub"></p>
       </div>
-      <ol class="steps" id="steps"></ol>
+      <ol class="pipeline" id="steps"></ol>
+      <div class="how-cta">
+        <p id="how-cta-text">Veja esse fluxo funcionando com o funil da sua área.</p>
+        <div class="cta-actions">
+          <a class="btn gold" href="#contato" data-subject="demonstracao">Agendar demonstração</a>
+          <a class="btn" href="#planos">Ver planos</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -92,7 +102,7 @@
       <ol class="flow" id="flow"></ol>
       <div class="all-in">
         <p class="kicker">Tudo isso já vem incluso</p>
-        <ul class="chips" id="chips"></ul>
+        <ul class="incl" id="chips"></ul>
       </div>
       <div class="story-cta">
         <div>
