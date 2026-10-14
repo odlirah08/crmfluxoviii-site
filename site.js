@@ -198,7 +198,7 @@ function renderSections(n) {
     return '<li class="node" data-kind="' + f[1] + '"><span class="dot" aria-hidden="true"></span>' +
       '<div class="node-card"><span class="time">' + esc(f[0]) + '</span><h3>' + esc(f[2]) + '</h3><p>' + esc(f[3]) + '</p></div></li>';
   }).join("");
-  var chips = ["Até 3 números de WhatsApp", "Atendente IA com horário", "Funil por etapas", "Formulários com link", "Agenda e lembretes", "Propostas e vendas", "Cobrança pelo WhatsApp", "Painel do gestor", "Indicadores feitos pela IA", "Acesso por função", "Importação de planilha", "App no celular e tablet", "Bônus de IA pagando em dia"];
+  var chips = ["Até 3 números de WhatsApp", "Atendente IA com horário", "Funil por etapas", "Formulários com link", "Agenda e lembretes", "Propostas, vendas e cobranças", "Painel do gestor", "Indicadores feitos pela IA", "Acesso por função", "Importação de planilha", "App no celular e tablet", "Bônus de IA pagando em dia"];
   $("chips").innerHTML = chips.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
   $("story-cta-title").textContent = fill("Seu próximo {c} já está digitando.", n);
   watchFlow();
@@ -339,7 +339,7 @@ function renderFaq() {
   var faq = [
     ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site: um especialista mostra o FLUXO VIII funcionando com o funil da sua área e tira as suas dúvidas."],
     ["Como recebo o acesso depois de pagar?", "Assim que o Asaas confirma o pagamento, você recebe um link pessoal para criar a sua conta. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
-    ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano."],
+    ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano. Se a equipe crescer, você muda de plano dentro do próprio CRM, em Planos e upgrade."],
     ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês."],
     ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente; só a IA espera a renovação."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Dá para ligar até 3 números por empresa, cada um com um nome, como Recepção ou Financeiro."],
@@ -347,7 +347,6 @@ function renderFaq() {
     [fill("Consigo trazer os meus {cs} de outro sistema?", n), fill("Sim. Você importa uma planilha (do Excel, do Google Planilhas ou exportada de outro CRM) com os seus {cs}, já no funil e na etapa certa, e também a lista dos seus serviços com os valores.", n)],
     ["Funciona no celular e no tablet?", "Funciona no computador, no tablet e no celular, direto no navegador. Também dá para instalar como aplicativo na tela inicial, sem baixar nada da loja."],
     ["É seguro?", "Sim. Cada empresa só vê os próprios dados, cada pessoa da equipe vê só o que o administrador liberar e todo acesso é criptografado. O FLUXO VIII segue a LGPD e o pagamento é feito no Asaas, fora do CRM."],
-    ["Posso mudar de plano depois?", "Pode. Dentro do CRM, em Planos e upgrade, você pede a mudança e o nosso time faz a troca com você."],
     ["O que acontece se o pagamento atrasar?", "Você tem 2 dias de tolerância com tudo funcionando e avisos no sistema. Depois disso a conta fica só para consulta até o pagamento ser feito. Nada é apagado."],
     ["Posso cancelar?", "Pode, a qualquer momento e sem multa. Antes de cancelar, você pode exportar todos os seus dados. Depois do cancelamento, a conta fica só para consulta."]
   ];
