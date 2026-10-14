@@ -223,21 +223,20 @@ function renderSections(n) {
     vault: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/>'
   };
   var safe = [
-    ["wire", "Conexão criptografada", "HTTPS de ponta a ponta"],
-    ["key", "Acesso por convite", "Só entra quem você chamar"],
+    ["wire", "Criptografia", "Todo o tráfego usa HTTPS"],
+    ["key", "Acesso por convite", "Só entra quem o administrador chamar"],
     ["team", "Permissão por pessoa", "Cada um vê só o que precisa"],
-    ["card", "Pagamento no Asaas", "Seu cartão nunca passa pelo CRM"],
-    ["doc", "LGPD", "Exporte ou apague quando quiser"],
-    ["vault", "Dados isolados", "Sua empresa separada de todas as outras"]
+    ["card", "Pagamento no Asaas", "O cartão nunca passa pelo CRM"],
+    ["doc", "LGPD", "Exporte ou apague os dados quando quiser"],
+    ["vault", "Dados isolados", "Cada empresa separada das outras"]
   ];
   $("safe").innerHTML = safe.map(function (f, i) {
-    return '<li class="lock" data-i="' + i + '" tabindex="0"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
-      '<span class="lt"><strong>' + esc(f[1]) + '</strong><span>' + esc(f[2]) + '</span></span></li>';
+    return '<li class="lock" data-i="' + i + '" tabindex="0" title="' + esc(f[2]) + '"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
+      '<strong>' + esc(f[1]) + '</strong><span class="sr">: ' + esc(f[2]) + '</span></li>';
   }).join("");
-  // Anéis: o de fora é a camada 1; o centro são os dados. Acendem em sequência (onda) e no item apontado.
   var rings = "";
   for (var i = 0; i < safe.length; i++) rings += '<circle class="ring r' + i + '" data-i="' + i + '" cx="160" cy="160" r="' + (150 - i * 21) + '"/>';
-  rings += '<circle class="core-dot" cx="160" cy="160" r="24"/><g transform="translate(148 147)" class="core-ico"><svg width="24" height="26" viewBox="0 0 24 24">' + ICONS.vault + '</svg></g>';
+  rings += '<circle class="core-dot" cx="160" cy="160" r="30"/><g transform="translate(145 143)" class="core-ico"><svg width="30" height="32" viewBox="0 0 24 24">' + ICONS.key + '</svg></g>';
   $("rings").innerHTML = rings;
   var hl = function (i) {
     document.querySelectorAll("#rings .ring").forEach(function (c) { c.classList.toggle("hot", c.getAttribute("data-i") === String(i)); });
