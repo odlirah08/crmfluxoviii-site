@@ -631,3 +631,31 @@ footer .wrap{display:grid;gap:22px}
 .dd-menu a:hover{background:color-mix(in srgb,var(--gold) 10%,var(--surface))}
 .dd-menu b{font-size:15px}
 .dd-menu span{font-size:13px;color:var(--muted);line-height:1.35}
+
+/* Teste rápido compacto: título em cima, perguntas e resultado lado a lado (cabe numa tela) */
+@media (min-width:980px){
+  .diag{padding-block:36px}
+  .diag-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+  .diag-grid > .head{max-width:none;margin:0}
+  .diag-grid > .head .kicker{margin:0 0 6px}
+  .diag-grid > .head h2{font-size:clamp(26px,2.4vw,32px);line-height:1.15;margin:0}
+  .diag-grid > .head p:not(.kicker){margin:6px 0 0;max-width:none;font-size:15px}
+  .diag-grid > .head p br{display:none}
+  .diag-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"list loss" "meter loss" "inputs loss";grid-template-rows:auto auto 1fr;column-gap:24px;align-items:start;padding:18px 20px}
+  .diag-box > .diag-list{grid-area:list}
+  .diag-box > .diag-meter{grid-area:meter;margin-top:10px}
+  .diag-box > .diag-calc:not([hidden]){display:contents}
+  .diag-calc .calc-inputs{grid-area:inputs;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+  .diag-calc .calc-loss{grid-area:loss}
+  .diag-box:has(.diag-calc[hidden]){grid-template-columns:minmax(0,1fr);grid-template-areas:"list" "meter";grid-template-rows:auto auto}
+  .diag-list{gap:6px}
+  .diag-list label{padding:8px 12px;gap:10px;font-size:14.5px;line-height:1.35}
+  .diag-list input{width:18px;height:18px}
+  .calc-loss{padding:16px 18px}
+  .calc-big{font-size:clamp(32px,3.2vw,42px)}
+  .calc-parts{margin-top:8px;font-size:13.5px;gap:2px}
+  .calc-parts li{padding:3px 0}
+  .calc-year,.calc-vs{font-size:14px}
+  .calc-loss .btn{margin-top:10px}
+  .calc-note{font-size:11.5px}
+}
