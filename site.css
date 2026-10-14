@@ -136,25 +136,35 @@ section{padding-block:72px}
 @media (prefers-reduced-motion: reduce){.node{transition:none;opacity:1;transform:none}.node .dot{transition:none}}
 
 /* Segurança */
-/* Segurança: anéis de proteção (de fora para dentro) + lista das camadas */
-.safe-wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:start}
-.safe-visual{position:sticky;top:96px;max-width:440px;width:100%;margin-inline:auto}
+/* Segurança: cartão-cofre compacto, anéis que pulsam em onda e 6 travas */
+#seguranca{padding-block:56px}
+.vault{display:grid;grid-template-columns:260px minmax(0,1fr);gap:44px;align-items:center;padding:36px 40px;border-radius:28px;
+  background:radial-gradient(80% 120% at 0% 50%,color-mix(in srgb,var(--gold) 12%,transparent),transparent 60%),var(--surface);
+  border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));box-shadow:0 30px 60px -40px color-mix(in srgb,var(--gold) 60%,transparent)}
+.vault-visual{width:100%}
 .rings{width:100%;height:auto;display:block}
-.rings .ring{fill:none;stroke:var(--line);stroke-width:1.5;transition:stroke .35s ease,stroke-width .35s ease,filter .35s ease}
-.rings .ring.hot{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--gold) 70%,transparent))}
-.rings .core-dot{fill:var(--gold-soft);stroke:var(--gold);stroke-width:1.5}
-.rings .core-ico svg{fill:none;stroke:var(--gold-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.layers{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.layer{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:var(--surface);cursor:default;transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}
-.layer.hot{border-color:color-mix(in srgb,var(--gold) 70%,transparent);box-shadow:0 10px 30px -18px color-mix(in srgb,var(--gold) 80%,transparent);transform:translateX(4px)}
-.layer:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.layer .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--gold-soft)}
-.layer .ico svg{width:24px;height:24px;fill:none;stroke:var(--gold-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.lnum{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink)}
-.layer h3{font-family:var(--body);font-weight:700;font-size:17.5px;letter-spacing:0;margin-top:2px}
-.layer p{margin-top:4px;color:var(--muted);font-size:15px}
-@media (max-width:900px){.safe-wrap{grid-template-columns:minmax(0,1fr);gap:24px}.safe-visual{position:static;max-width:260px;order:0}}
-@media (prefers-reduced-motion: reduce){.layer,.rings .ring{transition:none}.layer.hot{transform:none}}
+.rings .ring{fill:none;stroke:var(--line);stroke-width:1.6;transition:stroke .3s ease,stroke-width .3s ease}
+.rings .ring{animation:wave 3.6s ease-in-out infinite}
+.rings .r0{animation-delay:1.5s}.rings .r1{animation-delay:1.2s}.rings .r2{animation-delay:.9s}.rings .r3{animation-delay:.6s}.rings .r4{animation-delay:.3s}.rings .r5{animation-delay:0s}
+@keyframes wave{0%,100%{stroke:var(--line);stroke-width:1.6}12%{stroke:var(--gold);stroke-width:3}30%{stroke:var(--line);stroke-width:1.6}}
+.rings.paused .ring{animation:none}
+.rings .ring.hot{stroke:var(--gold);stroke-width:3.4;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--gold) 70%,transparent))}
+.rings .core-dot{fill:var(--gold);stroke:none;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--gold) 70%,transparent))}
+.rings .core-ico svg{fill:none;stroke:#0B1F4A;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.vault-text h2{font-size:clamp(24px,2.8vw,36px);line-height:1.15;max-width:22ch}
+.big6{display:inline-block;font-size:1.9em;line-height:.8;vertical-align:-.12em;margin-right:.08em;color:var(--gold-ink)}
+.locks{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.lock{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--paper);min-width:0;transition:border-color .2s ease,transform .2s ease}
+.lock.hot{border-color:var(--gold);transform:translateY(-2px)}
+.lock:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.lock .ico{flex:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--gold-soft)}
+.lock .ico svg{width:21px;height:21px;fill:none;stroke:var(--gold-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lt{display:grid;min-width:0;line-height:1.3}
+.lt strong{font-size:15px}
+.lt span{font-size:13.5px;color:var(--muted)}
+@media (max-width:1000px){.locks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.vault{grid-template-columns:minmax(0,1fr);padding:26px 20px;gap:18px;text-align:left}.vault-visual{max-width:170px}.locks{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion: reduce){.rings .ring{animation:none;transition:none}.lock{transition:none}.lock.hot{transform:none}}
 
 /* Planos */
 .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}

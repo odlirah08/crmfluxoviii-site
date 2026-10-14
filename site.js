@@ -213,35 +213,34 @@ function renderSections(n) {
     vault: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/>'
   };
   var safe = [
-    ["wire", "Conexão criptografada", "Todo o tráfego usa HTTPS. As chaves de integração ficam só no servidor, nunca no navegador."],
-    ["key", "Acesso protegido", "Entrada com e-mail e senha ou conta Google. Pessoas da equipe só entram por convite do administrador."],
-    ["team", "Cada um vê o que precisa", n.privacy + " Dá para tirar o acesso de alguém na hora."],
-    ["card", "Pagamento fora do CRM", "Você paga na página segura do Asaas. O FLUXO VIII não recebe nem guarda os dados do seu cartão."],
-    ["doc", "LGPD de verdade", "Termos, Política de Privacidade e contrato de tratamento de dados. Você exporta ou apaga os dados quando quiser."],
-    ["vault", "Dados isolados por empresa", fill("As conversas e os dados dos seus {cs} ficam separados dos de qualquer outra empresa, em servidores do Google Cloud.", n)]
+    ["wire", "Conexão criptografada", "HTTPS de ponta a ponta"],
+    ["key", "Acesso por convite", "Só entra quem você chamar"],
+    ["team", "Permissão por pessoa", "Cada um vê só o que precisa"],
+    ["card", "Pagamento no Asaas", "Seu cartão nunca passa pelo CRM"],
+    ["doc", "LGPD", "Exporte ou apague quando quiser"],
+    ["vault", "Dados isolados", "Sua empresa separada de todas as outras"]
   ];
   $("safe").innerHTML = safe.map(function (f, i) {
-    return '<li class="layer" data-i="' + i + '" tabindex="0"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
-      '<div><span class="lnum">Camada ' + (i + 1) + '</span><h3>' + esc(f[1]) + '</h3><p>' + esc(f[2]) + '</p></div></li>';
+    return '<li class="lock" data-i="' + i + '" tabindex="0"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
+      '<span class="lt"><strong>' + esc(f[1]) + '</strong><span>' + esc(f[2]) + '</span></span></li>';
   }).join("");
-  // Anéis: o de fora é a camada 1; o centro (núcleo) são os dados
+  // Anéis: o de fora é a camada 1; o centro são os dados. Acendem em sequência (onda) e no item apontado.
   var rings = "";
-  for (var i = 0; i < safe.length; i++) {
-    var r = 150 - i * 21;
-    rings += '<circle class="ring" data-i="' + i + '" cx="160" cy="160" r="' + r + '"/>';
-  }
-  rings += '<circle class="core-dot" cx="160" cy="160" r="22"/><g transform="translate(148 147)" class="core-ico"><svg width="24" height="26" viewBox="0 0 24 24">' + ICONS.vault + '</svg></g>';
+  for (var i = 0; i < safe.length; i++) rings += '<circle class="ring r' + i + '" data-i="' + i + '" cx="160" cy="160" r="' + (150 - i * 21) + '"/>';
+  rings += '<circle class="core-dot" cx="160" cy="160" r="24"/><g transform="translate(148 147)" class="core-ico"><svg width="24" height="26" viewBox="0 0 24 24">' + ICONS.vault + '</svg></g>';
   $("rings").innerHTML = rings;
   var hl = function (i) {
     document.querySelectorAll("#rings .ring").forEach(function (c) { c.classList.toggle("hot", c.getAttribute("data-i") === String(i)); });
-    document.querySelectorAll("#safe .layer").forEach(function (l) { l.classList.toggle("hot", l.getAttribute("data-i") === String(i)); });
+    document.querySelectorAll("#safe .lock").forEach(function (l) { l.classList.toggle("hot", l.getAttribute("data-i") === String(i)); });
+    $("rings").classList.toggle("paused", i !== null);
   };
-  document.querySelectorAll("#safe .layer").forEach(function (l) {
+  document.querySelectorAll("#safe .lock").forEach(function (l) {
     var i = l.getAttribute("data-i");
     l.addEventListener("mouseenter", function () { hl(i); });
     l.addEventListener("focus", function () { hl(i); });
+    l.addEventListener("mouseleave", function () { hl(null); });
+    l.addEventListener("blur", function () { hl(null); });
   });
-  hl(0);
 }
 
 function buildChips() {
