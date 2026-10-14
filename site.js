@@ -219,6 +219,10 @@ function buildChips() {
 
 // ---------------------------------------------------------------------------
 // Planos → escolha mensal/anual → pagamento no Asaas
+// Desconto do anual em número inteiro (ex.: 24%), calculado dos próprios preços
+function annualOff(p) { return Math.round((1 - p.anual.perMonth / p.mensal.price) * 100); }
+function maxAnnualOff() { return Math.max.apply(null, PLANS.map(annualOff)); }
+
 function renderPlans() {
   if (!$("plans")) return;
   var who = NICHES[current].who;
@@ -228,7 +232,7 @@ function renderPlans() {
       "<h3>" + esc(p.name) + "</h3>" +
       '<p class="who">' + esc(who[i]) + "</p>" +
       '<div class="price"><span class="cur">R$</span><span class="val">' + brl(p.mensal.price) + '</span><span class="per">/mês</span></div>' +
-      '<p class="alt">ou <strong>R$ ' + brl(p.anual.perMonth) + "/mês</strong> no plano anual</p>" +
+      '<p class="alt">ou <strong>R$ ' + brl(p.anual.perMonth) + "/mês</strong> no plano anual <span class=\"off\">" + annualOff(p) + "% off</span></p>" +
       "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>Todos os recursos do FLUXO VIII</li></ul>" +
       '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + "</button>" +
       "</article>";
@@ -245,7 +249,7 @@ function openCycle(planId) {
   $("c-m-price").textContent = "R$ " + brl(chosen.mensal.price) + " por mês";
   $("c-m-note").textContent = "Renova todo mês. Pagando até o vencimento: +" + chosen.bonus.toLocaleString("pt-BR") + " créditos de IA.";
   $("c-a-price").textContent = "R$ " + brl(chosen.anual.total) + " por ano";
-  $("c-a-note").textContent = "Equivale a R$ " + brl(chosen.anual.perMonth) + "/mês, cobrado uma vez por ano. Também ganha o bônus de IA.";
+  $("c-a-note").textContent = "Equivale a R$ " + brl(chosen.anual.perMonth) + "/mês (" + annualOff(chosen) + "% de desconto), cobrado uma vez por ano. Também ganha o bônus de IA.";
   dlg.querySelector('input[value="mensal"]').checked = true;
   if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
 }
@@ -284,7 +288,7 @@ function renderFaq() {
   var faq = [
     ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site e um especialista mostra o FLUXO VIII funcionando com o funil da sua área."],
     ["Como recebo o acesso depois de pagar?", "Quando o Asaas confirma o pagamento, enviamos um link pessoal para você criar a conta, por e-mail e WhatsApp. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
-    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza 23%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
+    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza até " + maxAnnualOff() + "%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
     ["Como ganho créditos de IA extras?", "Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro, +2.800 no Gold e +4.950 no Black. No cartão, a cobrança cai no dia e o bônus vem automático."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você pode conectar pelo QR Code, como no WhatsApp Web, ou pela API oficial da Meta. Dá para usar os dois, até 3 números."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e o que ela pode fazer, e ela para de responder quando alguém da equipe assume a conversa."],

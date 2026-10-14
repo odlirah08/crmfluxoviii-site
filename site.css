@@ -116,6 +116,7 @@ section{padding-block:72px}
 .price .per{color:var(--muted)}
 .alt{font-size:14.5px;color:var(--muted);margin-top:-10px}
 .alt strong{color:var(--ink)}
+.alt .off{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:999px;background:var(--gold-soft);color:var(--gold-ink);font-weight:700;font-size:13px;white-space:nowrap}
 .plan ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:15.5px}
 .plan li{display:flex;gap:10px}
 .plan li::before{content:"";flex:none;width:7px;height:7px;margin-top:.62em;border-radius:50%;background:var(--gold)}
