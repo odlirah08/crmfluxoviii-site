@@ -260,3 +260,25 @@ footer a:hover{text-decoration:underline}
 .cond{display:none}
 .cond.on{display:grid}
 .page-head + section{padding-top:24px}
+
+/* Quem somos */
+.about-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.about-quote{position:relative;padding:36px 32px 32px;border-radius:26px;background:var(--navy);color:var(--paper);overflow:hidden;align-self:stretch;display:flex;flex-direction:column;min-height:320px}
+:root[data-theme="dark"] .about-quote{background:#060E22;color:#E9EEF8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .about-quote{background:#060E22;color:#E9EEF8;border:1px solid var(--line)}}
+.about-quote .kicker{color:#D9AE55}
+.magnet-lines{position:absolute;right:-150px;bottom:-90px;width:400px;height:400px;opacity:.45}
+.magnet-lines path{fill:none;stroke:#D9AE55;stroke-width:1.5}
+.about-quote blockquote{margin:6px 0 0;font-family:var(--display);font-weight:700;font-size:clamp(30px,3.6vw,48px);line-height:1.08;letter-spacing:-.02em;position:relative}
+.about-quote .sign{margin-top:auto;padding-top:24px;font-size:14.5px;opacity:.8;position:relative;max-width:58%}
+.about-text h2{font-size:clamp(26px,3vw,38px);margin-bottom:16px}
+.about-text p{color:var(--muted);margin-top:14px;max-width:62ch}
+.about-text strong{color:var(--ink)}
+.pillars{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pillars li{padding:22px;border-radius:18px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.pn{font-family:var(--display);font-weight:700;font-size:14px;color:var(--gold-ink)}
+.pillars h3{font-family:var(--body);font-weight:700;font-size:18px;letter-spacing:0;margin-top:8px}
+.pillars p{margin-top:6px;color:var(--muted);font-size:15px}
+.about-close{margin-top:24px;color:var(--muted)}
+.about-close strong{color:var(--gold-ink)}
+@media (max-width:900px){.about-grid{grid-template-columns:minmax(0,1fr);gap:28px}.pillars{grid-template-columns:minmax(0,1fr)}}
