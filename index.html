@@ -79,13 +79,29 @@
       <div class="head">
         <p class="kicker">Teste rápido · 20 segundos</p>
         <h2 id="diag-title">O seu atendimento está deixando clientes escaparem?</h2>
-        <p>Marque o que já aconteceu com você nas últimas semanas.</p>
+        <p>Marque o que já aconteceu nas últimas semanas e veja quanto isso está custando.</p>
       </div>
       <div class="diag-box">
         <ul class="diag-list" id="diag-list"></ul>
         <div class="diag-meter" aria-live="polite">
           <div class="meter"><span id="diag-bar"></span></div>
           <p id="diag-result">Marque as frases acima para ver o resultado.</p>
+        </div>
+        <div class="diag-calc" id="diag-calc" hidden>
+          <div class="calc-inputs">
+            <label><span id="calc-leads-label">Contatos novos por semana</span><b id="calc-leads-out">20</b>
+              <input type="range" id="calc-leads" min="3" max="200" step="1" value="20"></label>
+            <label><span id="calc-ticket-label">Quanto vale um cliente</span><b id="calc-ticket-out">R$ 300</b>
+              <input type="range" id="calc-ticket" min="50" max="5000" step="50" value="300"></label>
+          </div>
+          <div class="calc-loss">
+            <p class="calc-kicker">Você pode estar deixando na mesa</p>
+            <p class="calc-big"><span id="calc-month">R$ 0</span><small>/mês</small></p>
+            <p class="calc-year">São <strong id="calc-year">R$ 0</strong> em um ano, <strong id="calc-lost">0</strong> <span id="calc-lost-word">clientes</span> que chamaram e foram embora.</p>
+            <p class="calc-vs" id="calc-vs"></p>
+            <a class="btn gold" href="#planos" id="calc-cta">Parar de perder clientes</a>
+            <p class="calc-note">Estimativa: cada situação marcada costuma custar cerca de 6 em cada 100 contatos. Ajuste os números para o seu caso.</p>
+          </div>
         </div>
       </div>
     </div>

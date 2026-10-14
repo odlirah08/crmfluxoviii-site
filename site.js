@@ -249,8 +249,51 @@ function renderSections(n) {
         k <= 2 ? "<strong>Atenção:</strong> " + esc(fill("já tem {c} escapando pelo caminho. Pouco por dia vira muito no fim do mês.", n)) :
         "<strong>Alerta:</strong> " + esc(fill("o seu atendimento está perdendo {cs} toda semana. Veja abaixo onde isso acontece e como resolver.", n));
     };
-    $("diag-list").addEventListener("change", function (e) { var t = e.target; if (t && t.dataset) checked[t.dataset.i] = t.checked; upd(); });
+    // Quanto isso custa: perda estimada a partir do que foi marcado
+    var lastShown = 0, animT = null;
+    var money = function (v) { return "R$ " + Math.round(v).toLocaleString("pt-BR"); };
+    var countTo = function (el, to) {
+      if (animT) cancelAnimationFrame(animT);
+      var from = lastShown, t0 = performance.now(), dur = 700;
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var step = function (now) {
+        var k = reduce ? 1 : Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = money(from + (to - from) * e);
+        if (k < 1) animT = requestAnimationFrame(step); else lastShown = to;
+      };
+      animT = requestAnimationFrame(step);
+    };
+    var calc = function () {
+      var k = document.querySelectorAll("#diag-list input:checked").length;
+      var box = $("diag-calc");
+      if (!box) return;
+      box.hidden = k === 0;
+      if (!k) { lastShown = 0; return; }
+      var leads = Number($("calc-leads").value), ticket = Number($("calc-ticket").value);
+      var rate = Math.min(0.06 * k, 0.3);
+      var lostMonth = leads * 4.3 * rate;
+      var month = lostMonth * ticket;
+      $("calc-leads-out").textContent = leads;
+      $("calc-ticket-out").textContent = money(ticket);
+      countTo($("calc-month"), month);
+      $("calc-year").textContent = money(month * 12);
+      var lostYear = Math.round(lostMonth * 12);
+      $("calc-lost").textContent = lostYear.toLocaleString("pt-BR");
+      $("calc-lost-word").textContent = lostYear === 1 ? fill("{c}", n) : fill("{cs}", n);
+      var plan = PLANS[0].mensal.price;
+      var times = Math.floor(month / plan);
+      $("calc-vs").innerHTML = times >= 2
+        ? "O FLUXO VIII Start custa <strong>R$ " + brl(plan) + "/mês</strong>. A perda é <strong>" + times + " vezes</strong> esse valor."
+        : "O FLUXO VIII Start custa <strong>R$ " + brl(plan) + "/mês</strong>. Um único " + esc(fill("{c}", n)) + " recuperado já paga o mês.";
+      box.classList.toggle("hot", k >= 3);
+    };
+    if ($("calc-leads-label")) $("calc-leads-label").textContent = fill("{Cs} novos por semana", n);
+    if ($("calc-ticket-label")) $("calc-ticket-label").textContent = fill("Quanto vale um {c} para você", n);
+    if ($("calc-cta")) $("calc-cta").textContent = fill("Parar de perder {cs}", n);
+    ["calc-leads", "calc-ticket"].forEach(function (id) { if ($(id)) $(id).addEventListener("input", calc); });
+    $("diag-list").addEventListener("change", function (e) { var t = e.target; if (t && t.dataset) checked[t.dataset.i] = t.checked; upd(); calc(); });
     upd();
+    calc();
   }
   if ($("diag-title")) $("diag-title").textContent = fill("O seu atendimento está deixando {cs} escaparem?", n);
 
