@@ -219,9 +219,10 @@ function buildChips() {
 
 // ---------------------------------------------------------------------------
 // Planos → escolha mensal/anual → pagamento no Asaas
-// Desconto do anual em número inteiro (ex.: 24%), calculado dos próprios preços
-function annualOff(p) { return Math.round((1 - p.anual.perMonth / p.mensal.price) * 100); }
-function maxAnnualOff() { return Math.max.apply(null, PLANS.map(annualOff)); }
+// Desconto do anual em número inteiro, sempre arredondado para BAIXO (o real é igual ou maior):
+// com os preços de hoje todos ficam 23% (o real vai de 23,4% a 23,9%)
+function annualOff(p) { return Math.floor((1 - p.anual.perMonth / p.mensal.price) * 100); }
+function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 
 function renderPlans() {
   if (!$("plans")) return;
@@ -288,7 +289,7 @@ function renderFaq() {
   var faq = [
     ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site e um especialista mostra o FLUXO VIII funcionando com o funil da sua área."],
     ["Como recebo o acesso depois de pagar?", "Quando o Asaas confirma o pagamento, enviamos um link pessoal para você criar a conta, por e-mail e WhatsApp. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
-    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza até " + maxAnnualOff() + "%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
+    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
     ["Como ganho créditos de IA extras?", "Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro, +2.800 no Gold e +4.950 no Black. No cartão, a cobrança cai no dia e o bônus vem automático."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você pode conectar pelo QR Code, como no WhatsApp Web, ou pela API oficial da Meta. Dá para usar os dois, até 3 números."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e o que ela pode fazer, e ela para de responder quando alguém da equipe assume a conversa."],
