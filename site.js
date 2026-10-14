@@ -3,7 +3,7 @@
 "use strict";
 
 // ===== Endereço do CRM (login, termos, formulário de contato) =====
-var CRM_URL = "https://fluxo-vii-crm--gen-lang-client-0285512077.us-east4.hosted.app";
+var CRM_URL = "https://app.crmfluxoviii.tech";
 
 // ===== Planos e links de pagamento do Asaas =====
 var PLANS = [

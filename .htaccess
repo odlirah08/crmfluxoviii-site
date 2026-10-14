@@ -8,7 +8,7 @@ RewriteRule ^ https://crmfluxoviii.tech%{REQUEST_URI} [L,R=301]
 
 # crmfluxoviii.tech/login (ou /entrar) → tela de login do CRM
 # Quando o CRM ganhar o endereço app.crmfluxoviii.tech, troque só o endereço abaixo.
-RewriteRule ^(login|entrar)/?$ https://fluxo-vii-crm--gen-lang-client-0285512077.us-east4.hosted.app/entrar [L,R=302]
+RewriteRule ^(login|entrar)/?$ https://app.crmfluxoviii.tech/entrar [L,R=302]
 
 # Páginas sem ".html" no endereço
 RewriteRule ^planos/?$ planos.html [L]
