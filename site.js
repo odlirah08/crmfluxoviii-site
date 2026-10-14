@@ -274,6 +274,36 @@ function renderSections(n) {
     ["“Já uso o WhatsApp no meu celular.”", "Você conecta o mesmo número pelo QR Code e continua usando. A diferença é que nada mais se perde."],
     ["“Deve ser caro.”", fill("O Start custa R$ " + brl(PLANS[0].mensal.price) + " por mês. Menos do que um único {c} que deixa de fechar por falta de resposta.", n)]
   ];
+  // Exemplos de uso (cenários, não depoimentos)
+  var cases = [
+    ["Clínica de saúde", "A recepção anotava pedidos do WhatsApp no papel e muita gente ficava sem retorno.", "Cada mensagem vira card no funil, o horário entra na agenda e o lembrete sai pelo WhatsApp na véspera."],
+    ["Consultório de psicologia", "A terapeuta respondia entre uma sessão e outra e perdia contatos fora do horário.", "A IA tira dúvidas fora do expediente, oferece a primeira sessão e chama a terapeuta quando o assunto pede uma pessoa."],
+    ["Escritório de arquitetura", "Briefings chegavam espalhados entre Instagram, e-mail e WhatsApp.", "O link do formulário na bio leva o briefing direto para o funil, e a proposta sai pelo próprio CRM."],
+    ["Infoprodutor com closers", "Os closers disputavam leads numa planilha e ninguém sabia quem tinha respondido.", "Quem responde primeiro vira o responsável, e o ranking da equipe aparece no painel."],
+    ["Consultoria", "O sócio pedia relatório toda segunda e alguém perdia a manhã montando planilha.", "O painel é compartilhado por link e o sócio acompanha os números sem precisar de acesso ao CRM."]
+  ];
+  if ($("case-list")) $("case-list").innerHTML = cases.map(function (c) {
+    return '<li><span class="case-tag">Exemplo de uso</span><h3>' + esc(c[0]) + '</h3><p class="case-before"><b>Antes:</b> ' + esc(c[1]) + '</p><p class="case-after"><b>Com o FLUXO VIII:</b> ' + esc(c[2]) + "</p></li>";
+  }).join("");
+
+  // Depoimentos: só modelo na prévia (some no domínio oficial até existirem depoimentos reais)
+  var TESTIMONIALS = []; // [texto, nome, área e cidade] — preencher só com depoimentos reais e autorizados
+  var isLive = /(^|\.)crmfluxoviii\.tech$/.test(location.hostname);
+  var tBox = $("testi-list"), tSec = $("depoimentos");
+  if (tBox && tSec) {
+    if (TESTIMONIALS.length) {
+      tSec.hidden = false;
+      tSec.querySelector(".kicker").textContent = "Quem já usa";
+      tSec.querySelector(".head p:last-child").remove();
+      tBox.innerHTML = TESTIMONIALS.map(function (t) { return '<li><blockquote>“' + esc(t[0]) + '”</blockquote><p class="who"><b>' + esc(t[1]) + "</b> · " + esc(t[2]) + "</p></li>"; }).join("");
+    } else if (!isLive) {
+      tSec.hidden = false;
+      tBox.innerHTML = [1, 2, 3, 4, 5].map(function (i) {
+        return '<li class="placeholder"><span class="ph-tag">Modelo</span><blockquote>“Espaço para o depoimento real do cliente ' + i + '.”</blockquote><p class="who"><b>Nome do cliente</b> · Área · Cidade</p></li>';
+      }).join("");
+    }
+  }
+
   if ($("obj-list")) $("obj-list").innerHTML = objs.map(function (o) { return "<li><h3>" + esc(o[0]) + "</h3><p>" + esc(o[1]) + "</p></li>"; }).join("");
 }
 
