@@ -11,11 +11,10 @@ var PLANS = [
     mensal: { price: 66.90, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 50.90, total: 610.80, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
   { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
     mensal: { price: 99.90, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 76.40, total: 916.80, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
-  // Gold: colar aqui os links do Asaas quando forem criados. Sem link, o botão leva para falar com um especialista.
   { id: "gold", name: "Magnet Gold", users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
-    mensal: { price: 167.00, url: "" }, anual: { perMonth: 127.90, total: 1534.80, url: "" } },
+    mensal: { price: 167.00, url: "https://www.asaas.com/000/c/bcdi9ol829a68rdy" }, anual: { perMonth: 127.90, total: 1534.80, url: "https://www.asaas.com/000/c/x4cjirokdf5vs10m" } },
   { id: "black", name: "Magnet Black", users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
-    mensal: { price: 297.00, url: "https://www.asaas.com/c/oc571ffclgrtq0ao" }, anual: { perMonth: 226.90, total: 2722.80, url: "https://www.asaas.com/c/q7s0xk0qcyp9nnbo" } }
+    mensal: { price: 297.00, url: "https://www.asaas.com/000/c/r87eff0n9l749i51" }, anual: { perMonth: 226.90, total: 2722.80, url: "https://www.asaas.com/000/c/lh0cveg97nvjrcug" } }
 ];
 
 // ===== Textos por área (as mesmas áreas do CRM) =====
@@ -131,7 +130,7 @@ var store = {
   get: function (k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } },
   set: function (k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
 };
-var isAsaas = function (u) { return /^https:\/\/www\.asaas\.com\/c\/[A-Za-z0-9]+$/.test(u); };
+var isAsaas = function (u) { return /^https:\/\/www\.asaas\.com\/(?:000\/)?c\/[A-Za-z0-9]+$/.test(u); };
 
 function fill(t, n) {
   return t.replace(/\{(Cs|C|cs|c|As|as|a)\}/g, function (_, k) {
