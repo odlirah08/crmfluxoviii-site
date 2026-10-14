@@ -392,62 +392,176 @@ function buildChips() {
 function annualOff(p) { return Math.floor((1 - p.anual.perMonth / p.mensal.price) * 100); }
 function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 
+var cycle = store.get("fluxo-ciclo") === "mensal" ? "mensal" : "anual";
+var MAX_FUNNELS = { start: "2", pro: "3", gold: "5", black: "ilimitados" };
+var maxUsers = function (p) { return Number((p.users.match(/\d+/) || [1])[0]); };
+var maxAdmins = function (p) { return Number(((p.users.match(/\((\d+)/) || [0, 1])[1])); };
+
 function renderPlans() {
   if (!$("plans")) return;
   var who = NICHES[current].who;
+  var off = minAnnualOff();
+  if ($("cycle-off")) $("cycle-off").textContent = off + "% off";
+  document.querySelectorAll("#cycle-switch button").forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.cycle === cycle)); });
   $("plans").innerHTML = PLANS.map(function (p, i) {
+    var annual = cycle === "anual";
+    var price = annual ? p.anual.perMonth : p.mensal.price;
+    var save = (p.mensal.price * 12) - p.anual.total;
+    var sub = annual
+      ? '<p class="alt">R$ ' + brl(p.anual.total) + " cobrado uma vez por ano · <strong>economia de R$ " + brl(save) + "</strong></p>"
+      : '<p class="alt">ou <strong>R$ ' + brl(p.anual.perMonth) + "/mês</strong> no anual <span class=\"off\">" + annualOff(p) + "% off</span></p>";
     return '<article class="plan' + (p.tag ? " pro" : "") + '">' +
       (p.tag ? '<span class="tag">' + esc(p.tag) + "</span>" : "") +
       "<h3>" + esc(p.name) + "</h3>" +
       '<p class="who">' + esc(who[i]) + "</p>" +
-      '<div class="price"><span class="cur">R$</span><span class="val">' + brl(p.mensal.price) + '</span><span class="per">/mês</span></div>' +
-      '<p class="alt">ou <strong>R$ ' + brl(p.anual.perMonth) + "/mês</strong> no plano anual <span class=\"off\">" + annualOff(p) + "% off</span></p>" +
-      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>Todos os recursos do FLUXO VIII</li></ul>" +
-      '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + "</button>" +
+      '<div class="price"><span class="cur">R$</span><span class="val">' + brl(price) + '</span><span class="per">/mês</span></div>' + sub +
+      '<p class="pp">Sai a <strong>R$ ' + brl(price / maxUsers(p)) + "</strong> por pessoa com a equipe completa</p>" +
+      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + (MAX_FUNNELS[p.id] === "ilimitados" ? "Funis ilimitados" : "Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)") + "</li><li>Todos os recursos do FLUXO VIII</li></ul>" +
+      '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + (annual ? " anual" : " mensal") + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + (annual ? " anual" : " mensal") + "</button>" +
       "</article>";
   }).join("");
+  renderPerUser();
+  renderCompare();
+  renderCredits();
 }
 
-var chosen = null;
-var dlg = $("cycle");
-if (dlg) {
-function openCycle(planId) {
-  chosen = PLANS.filter(function (p) { return p.id === planId; })[0];
-  if (!chosen) return;
-  $("cycle-title").textContent = "Como prefere pagar o " + chosen.name + "?";
-  $("c-m-price").textContent = "R$ " + brl(chosen.mensal.price) + " por mês";
-  $("c-m-note").textContent = "Renova todo mês. Pagando até o vencimento: +" + chosen.bonus.toLocaleString("pt-BR") + " créditos de IA.";
-  $("c-a-price").textContent = "R$ " + brl(chosen.anual.total) + " por ano";
-  $("c-a-note").textContent = "Equivale a R$ " + brl(chosen.anual.perMonth) + "/mês (" + annualOff(chosen) + "% de desconto), cobrado uma vez por ano. Também ganha o bônus de IA.";
-  dlg.querySelector('input[value="mensal"]').checked = true;
-  if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+// Comparação com quem cobra por usuário (preço de mercado de referência, sem citar marca)
+var PER_SEAT = 149;
+function renderPerUser() {
+  if (!$("per-user")) return;
+  var team = 5, gold = PLANS[2];
+  var price = cycle === "anual" ? gold.anual.perMonth : gold.mensal.price;
+  $("per-user").innerHTML =
+    '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + brl(PER_SEAT * team) + '<small>/mês</small></span><span class="pu-n">' + team + " pessoas × R$ " + brl(PER_SEAT) + "</span></div>" +
+    '<div class="pu-vs" aria-hidden="true">vs</div>' +
+    '<div class="pu-side good"><span class="pu-k">FLUXO VIII ' + esc(gold.name.replace("Magnet ", "Magnet ")) + '</span><span class="pu-v">R$ ' + brl(price) + '<small>/mês</small></span><span class="pu-n">a mesma equipe de ' + team + " pessoas, no pacote</span></div>" +
+    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + brl(PER_SEAT) + " por usuário. Aqui a equipe já está no preço do plano.</p>";
 }
-function closeCycle() { if (typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); }
-$("plans").addEventListener("click", function (e) {
-  var b = e.target.closest("button[data-plan]");
-  if (b) openCycle(b.dataset.plan);
-});
-$("c-close").addEventListener("click", closeCycle);
-dlg.addEventListener("click", function (e) { if (e.target === dlg) closeCycle(); });
-$("c-go").addEventListener("click", function () {
-  if (!chosen) return;
-  var cycle = dlg.querySelector('input[name="cycle"]:checked').value;
-  var url = cycle === "anual" ? chosen.anual.url : chosen.mensal.url;
-  if (!isAsaas(url)) { // plano sem link de pagamento ainda: fala com um especialista
-    var plan = chosen.id;
-    closeCycle();
-    if (form && form.querySelector('input[name="subject"]')) goContact("especialista", plan);
-    else location.href = "/?assunto=especialista&plano=" + encodeURIComponent(plan) + "#contato";
+
+function renderCompare() {
+  if (!$("compare")) return;
+  var yes = '<span class="yes" aria-label="sim">✓</span>';
+  var all = function () { return PLANS.map(function () { return yes; }); };
+  var rows = [
+    ["Preço e equipe"],
+    ["Mensal", PLANS.map(function (p) { return "R$ " + brl(p.mensal.price); })],
+    ["Anual (por mês)", PLANS.map(function (p) { return "R$ " + brl(p.anual.perMonth); })],
+    ["Usuários", PLANS.map(function (p) { return "até " + maxUsers(p); })],
+    ["Administradores", PLANS.map(function (p) { return String(maxAdmins(p)); })],
+    ["Custo por pessoa (equipe completa, mensal)", PLANS.map(function (p) { return "R$ " + brl(p.mensal.price / maxUsers(p)); })],
+    ["Cobrança por usuário a mais", PLANS.map(function () { return "não tem"; })],
+    ["Inteligência artificial"],
+    ["Créditos de IA por mês", PLANS.map(function (p) { return (p.ai.match(/[\d.]+/) || [""])[0]; })],
+    ["Bônus pagando até o vencimento", PLANS.map(function (p) { return "+" + p.bonus.toLocaleString("pt-BR"); })],
+    ["Atendente IA no WhatsApp (com nome e horário)", all()],
+    ["Acabaram os créditos: usar a sua própria chave de IA", all()],
+    ["Resumo e análise da conversa pela IA", all()],
+    ["Funil e atendimento"],
+    ["Funis (ex.: Vendas, CS)", PLANS.map(function (p) { return MAX_FUNNELS[p.id]; })],
+    ["Card criado sozinho no CS quando a venda é ganha", all()],
+    ["Números de WhatsApp por empresa", PLANS.map(function () { return "até 3"; })],
+    ["Instagram Direct", all()],
+    ["Formulários e link na bio", all()],
+    ["Mensagens favoritas e modelos", all()],
+    ["Gestão"],
+    ["Agenda com Google Agenda e lembretes", all()],
+    ["Vendas, orçamentos e cobrança pelo WhatsApp", all()],
+    ["Dashboard e painel compartilhável com o sócio", all()],
+    ["Importar planilha e conversas do WhatsApp", all()],
+    ["Acesso por pessoa, registro de acessos e LGPD", all()]
+  ];
+  var head = "<tr><th scope=\"col\"><span class=\"sr\">Recurso</span></th>" + PLANS.map(function (p) { return '<th scope="col"' + (p.tag ? ' class="hl"' : "") + ">" + esc(p.name.replace("Magnet ", "")) + "</th>"; }).join("") + "</tr>";
+  var body = rows.map(function (r) {
+    if (r.length === 1) return '<tr class="grp"><th colspan="' + (PLANS.length + 1) + '" scope="colgroup">' + esc(r[0]) + "</th></tr>";
+    return '<tr><th scope="row">' + esc(r[0]) + "</th>" + r[1].map(function (v, i) { return "<td" + (PLANS[i].tag ? ' class="hl"' : "") + ">" + (v.indexOf("<span") === 0 ? v : esc(v)) + "</td>"; }).join("") + "</tr>";
+  }).join("");
+  $("compare").innerHTML =
+    '<div class="head"><p class="kicker">Comparativo completo</p><h3>Tudo que entra em cada plano</h3><p>Sem letra miúda: linha por linha, o que muda de um plano para o outro.</p></div>' +
+    '<div class="compare-scroll" tabindex="0" role="region" aria-label="Tabela comparativa dos planos"><table class="compare"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
+}
+
+function renderCredits() {
+  if (!$("credits")) return;
+  var cols = PLANS.map(function (p) { return '<span><small>' + esc(p.name.replace("Magnet ", "")) + "</small><b>" + (p.ai.match(/[\d.]+/) || [""])[0] + "</b></span>"; }).join("");
+  var bon = PLANS.map(function (p) { return '<span><small>' + esc(p.name.replace("Magnet ", "")) + "</small><b>+" + p.bonus.toLocaleString("pt-BR") + "</b></span>"; }).join("");
+  $("credits").innerHTML =
+    '<div class="head"><p class="kicker">Créditos de IA</p><h3>Como funcionam os créditos</h3><p>Cada resposta ou análise da IA usa 1 crédito. Documentos e envios em lote usam 5.</p></div>' +
+    '<div class="cr-grid">' +
+      '<div class="cr-card"><p class="cr-t">Todo mês, no plano</p><div class="cr-cols">' + cols + "</div><p class=\"cr-d\">Renovam na virada do mês e não acumulam.</p></div>" +
+      '<div class="cr-card"><p class="cr-t">Bônus por pagar em dia</p><div class="cr-cols">' + bon + "</div><p class=\"cr-d\">Pagou até o vencimento, ganha os créditos a mais até o próximo vencimento.</p></div>" +
+      '<div class="cr-card key"><p class="cr-t">Acabou? O atendimento não para</p><p class="cr-big">Conecte a sua própria chave de IA</p><p class="cr-d">Em Ajustes, você liga a sua chave e a IA segue respondendo na hora, sem gastar créditos do plano e sem pagar nada a mais para a gente.</p></div>' +
+    "</div>";
+}
+
+// Assinar: vai direto para o pagamento do período escolhido
+function goCheckout(planId) {
+  var p = PLANS.filter(function (x) { return x.id === planId; })[0];
+  if (!p) return;
+  var url = cycle === "anual" ? p.anual.url : p.mensal.url;
+  if (!isAsaas(url)) {
+    if (form && form.querySelector('input[name="subject"]')) goContact("especialista", p.id);
+    else location.href = "/?assunto=especialista&plano=" + encodeURIComponent(p.id) + "#contato";
     return;
   }
   location.href = url;
-});
-$("c-talk").addEventListener("click", function () {
-  var plan = chosen ? chosen.id : "";
-  closeCycle();
-  if (form && form.querySelector('input[name="subject"]')) goContact("especialista", plan);
-  else location.href = "/?assunto=especialista&plano=" + encodeURIComponent(plan) + "#contato";
-});
+}
+if ($("plans")) {
+  $("plans").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-plan]");
+    if (b) goCheckout(b.dataset.plan);
+  });
+}
+if ($("cycle-switch")) {
+  $("cycle-switch").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-cycle]");
+    if (!b || b.dataset.cycle === cycle) return;
+    cycle = b.dataset.cycle;
+    store.set("fluxo-ciclo", cycle);
+    renderPlans();
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Veja por dentro: telas reais do CRM em abas
+var INSIDE = [
+  ["funil", "Funil", "Cada contato vira um card e anda pelas etapas", ["Arraste o card de etapa em etapa e veja onde cada negócio está.", "Etiquetas, valor, última mensagem e o índice de conexão no próprio card.", "Funis separados para Vendas e CS, cada um com as suas etapas."]],
+  ["conversas", "Conversas", "WhatsApp e Instagram numa tela só", ["Todas as conversas da equipe, com quem está atendendo cada uma.", "Aviso de atraso quando alguém espera resposta há tempo demais.", "A IA resume a conversa e sugere o próximo passo."]],
+  ["historico", "Histórico do cliente", "Tudo o que aconteceu com cada pessoa", ["Mensagens, anotações, vendas e agendamentos numa linha do tempo.", "Contato, origem, interesse e responsável sempre à vista.", "Lance a venda ou marque o retorno dali mesmo."]],
+  ["agenda", "Agenda", "Horários que se organizam sozinhos", ["Agenda ligada ao Google Agenda e link com a videochamada.", "Lembrete automático pelo WhatsApp na véspera.", "Link público para o cliente escolher o horário."]],
+  ["painel", "Painel", "Os números do negócio sem planilha", ["Faturamento, vendas, conversão e tempo de resposta do período.", "Comparação com o período anterior e meta do mês.", "Painel compartilhável com o sócio por link."]],
+  ["automacao", "Automação", "Venda ganha, pós-venda começa", ["Quando o card vira Ganho, o card do CS nasce sozinho.", "Cada funil com o seu time e o seu número de WhatsApp.", "Quem vê cada funil é você quem decide."]]
+];
+var insideOn = "funil";
+function renderInside() {
+  if (!$("in-tabs")) return;
+  $("in-tabs").innerHTML = INSIDE.map(function (t) {
+    var on = t[0] === insideOn;
+    return '<button type="button" role="tab" id="in-tab-' + t[0] + '" aria-selected="' + on + '" aria-controls="in-panel" tabindex="' + (on ? 0 : -1) + '" data-in="' + t[0] + '">' + esc(t[1]) + "</button>";
+  }).join("");
+  var t = INSIDE.filter(function (x) { return x[0] === insideOn; })[0];
+  $("in-panel").setAttribute("aria-labelledby", "in-tab-" + t[0]);
+  $("in-panel").innerHTML =
+    '<div class="in-text"><h3>' + esc(t[2]) + "</h3><ul>" + t[3].map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul><a class="btn gold" href="#planos">Quero usar no meu negócio</a></div>' +
+    '<figure class="in-shot"><div class="in-bar" aria-hidden="true"><i></i><i></i><i></i><span>FLUXO VIII CRM</span></div><img src="img/crm-' + t[0] + '.webp" alt="Tela de ' + esc(t[1]) + ' do FLUXO VIII com dados de exemplo" loading="lazy" decoding="async"></figure>';
+}
+if ($("in-tabs")) {
+  $("in-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-in]");
+    if (!b) return;
+    insideOn = b.dataset.in;
+    renderInside();
+    $("in-tab-" + insideOn).focus();
+  });
+  $("in-tabs").addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    var i = INSIDE.findIndex(function (x) { return x[0] === insideOn; });
+    i = (i + (e.key === "ArrowRight" ? 1 : INSIDE.length - 1)) % INSIDE.length;
+    insideOn = INSIDE[i][0];
+    renderInside();
+    $("in-tab-" + insideOn).focus();
+    e.preventDefault();
+  });
+  renderInside();
 }
 
 // ---------------------------------------------------------------------------
@@ -463,7 +577,7 @@ function renderFaq() {
     ["Como recebo o acesso depois de pagar?", "Assim que o Asaas confirma o pagamento, você recebe um link pessoal para criar a sua conta. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
     ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano. Se a equipe crescer, você muda de plano dentro do próprio CRM, em Planos e upgrade."],
     ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês."],
-    ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente; só a IA espera a renovação."],
+    ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente, e você pode conectar a sua própria chave de IA em Ajustes para a IA seguir respondendo sem gastar créditos do plano."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Dá para ligar até 3 números por empresa, cada um com um nome, como Recepção ou Financeiro."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e até onde ela vai (tirar dúvidas, fazer o primeiro atendimento ou também agendar), e ela para de responder quando alguém da equipe assume a conversa."],
     [fill("Consigo trazer os meus {cs} de outro sistema?", n), fill("Sim. Você importa uma planilha (do Excel, do Google Planilhas ou exportada de outro CRM) com os seus {cs}, já no funil e na etapa certa, e também a lista dos seus serviços com os valores.", n)],

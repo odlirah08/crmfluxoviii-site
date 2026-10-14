@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="site.css?v=20261014c">
+<link rel="stylesheet" href="site.css?v=20261014d">
 </head>
 <body>
 
@@ -27,6 +27,7 @@
       <a href="#diagnostico">Teste rápido</a>
       <a href="#quem-somos">Quem somos</a>
       <a href="#como-funciona">Como funciona</a>
+      <a href="#por-dentro">Por dentro</a>
       <a href="#planos">Planos</a>
       <a href="#perguntas">Perguntas</a>
     </nav>
@@ -230,6 +231,18 @@
     </div>
   </section>
 
+  <section id="por-dentro" class="inside">
+    <div class="wrap">
+      <div class="head">
+        <p class="kicker">Veja por dentro</p>
+        <h2>O FLUXO VIII de verdade, tela por tela</h2>
+        <p>Prints do sistema com a empresa de exemplo. É exatamente isso que você recebe.</p>
+      </div>
+      <div class="in-tabs" role="tablist" aria-label="Telas do FLUXO VIII" id="in-tabs"></div>
+      <div class="in-panel" id="in-panel" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </section>
+
   <section id="exemplos" class="cases">
     <div class="wrap">
       <div class="head">
@@ -259,7 +272,7 @@
     <div class="wrap">
       <div class="head">
         <h2>Planos</h2>
-        <p>Escolha pelo tamanho da equipe. Em seguida você escolhe entre mensal e anual. Dá para trocar de plano quando quiser.</p>
+        <p>Escolha pelo tamanho da equipe e pague por mês ou por ano. Dá para trocar de plano quando quiser.</p>
       </div>
       <div class="edge" aria-label="Por que o FLUXO VIII sai mais em conta">
         <div class="edge-item">
@@ -274,11 +287,18 @@
         </div>
         <div class="edge-item">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-          <b>Tudo liberado em todos os planos</b>
-          <span>Funil, WhatsApp, agenda, painel e Atendente IA em qualquer plano. O que muda é o tamanho da equipe e os créditos.</span>
+          <b>Todos os recursos em todos os planos</b>
+          <span>Funil, WhatsApp, agenda, painel e Atendente IA em qualquer plano. O que muda é o tamanho da equipe, os créditos e o número de funis.</span>
         </div>
       </div>
+      <div class="cycle-switch" role="radiogroup" aria-label="Forma de pagamento" id="cycle-switch">
+        <button type="button" role="radio" aria-checked="false" data-cycle="mensal">Mensal</button>
+        <button type="button" role="radio" aria-checked="true" data-cycle="anual">Anual <span class="off" id="cycle-off">23% off</span></button>
+      </div>
       <div class="plans" id="plans"></div>
+      <div class="per-user" id="per-user"></div>
+      <div class="compare-wrap" id="compare"></div>
+      <div class="credits" id="credits"></div>
     </div>
   </section>
 
@@ -368,31 +388,22 @@
 
 <footer>
   <div class="wrap">
-    <span>© 2026 FLUXO VIII CRM</span>
-    <nav aria-label="Documentos">
-      <a data-crm="/termos" href="#">Termos de Uso</a>
-      <a data-crm="/privacidade" href="#">Política de Privacidade</a>
-      <a data-crm="/dpa" href="#">Tratamento de Dados</a>
-      <a href="#contato" data-subject="especialista">Fale conosco</a>
-      <a data-login href="#">Entrar no CRM</a>
-    </nav>
+    <nav class="foot-chips" aria-label="Recursos"><a href="#por-dentro">Funil visual</a><a href="#recursos">Atendente IA</a><a href="#por-dentro">Conversas de WhatsApp e Instagram</a><a href="#por-dentro">Automação de pós-venda</a><a href="#recursos">Agenda e lembretes</a><a href="#por-dentro">Painel de resultados</a><a href="/planos">Planos e preços</a><a href="#diagnostico">Teste rápido</a></nav>
+    <div class="foot-bottom">
+      <span>© 2026 FLUXO VIII CRM</span>
+      <nav class="foot-links" aria-label="Documentos">
+        <a data-crm="/termos" href="#">Termos de Uso</a>
+        <a data-crm="/privacidade" href="#">Política de Privacidade</a>
+        <a data-crm="/dpa" href="#">Tratamento de Dados</a>
+        <a href="#contato" data-subject="especialista">Fale conosco</a>
+        <a data-login href="#">Entrar no CRM</a>
+      </nav>
+      <span class="foot-pay">Pagamento seguro pelo Asaas · Pix, boleto ou cartão</span>
+    </div>
   </div>
 </footer>
 
-<dialog id="cycle" aria-labelledby="cycle-title">
-  <div class="dlg">
-    <button type="button" class="x" id="c-close" aria-label="Fechar">×</button>
-    <h3 id="cycle-title">Como prefere pagar?</h3>
-    <label class="opt"><input type="radio" name="cycle" value="mensal" checked><span><b>Mensal</b><span class="big" id="c-m-price"></span><small id="c-m-note"></small></span></label>
-    <label class="opt"><input type="radio" name="cycle" value="anual"><span><b>Anual</b><span class="save">economize 23%</span><span class="big" id="c-a-price"></span><small id="c-a-note"></small></span></label>
-    <p class="secure">Você vai para a página segura do Asaas para pagar com Pix, boleto ou cartão.</p>
-    <div class="row">
-      <button type="button" class="textbtn" id="c-talk">Prefiro falar com um especialista</button>
-      <button type="button" class="btn gold" id="c-go">Continuar para o pagamento</button>
-    </div>
-  </div>
-</dialog>
 
-<script src="site.js?v=20261014c" defer></script>
+<script src="site.js?v=20261014d" defer></script>
 </body>
 </html>
