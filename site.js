@@ -218,17 +218,17 @@ function renderSections(n) {
     wire: '<path d="M4 12a8 8 0 0 1 16 0"/><path d="M7.5 12a4.5 4.5 0 0 1 9 0"/><rect x="9" y="12" width="6" height="7" rx="1.5"/>',
     key: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v2.5"/>',
     team: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A4.5 4.5 0 0 1 21 18.5"/>',
-    card: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/>',
+    card: '<path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-5h6v5"/><path d="M8 8h1M15 8h1M8 12h1M15 12h1"/>',
     doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 14l2 2 3.5-4"/>',
     vault: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/>'
   };
   var safe = [
-    ["wire", "Criptografia", "Todo o tráfego usa HTTPS"],
+    ["wire", "Conexão criptografada", "Todo o tráfego entre o seu aparelho e o servidor é criptografado (HTTPS)"],
+    ["vault", "Dados criptografados", "As informações ficam guardadas criptografadas nos servidores do Google Cloud"],
     ["key", "Acesso por convite", "Só entra quem o administrador chamar"],
     ["team", "Permissão por pessoa", "Cada um vê só o que precisa"],
-    ["card", "Pagamento no Asaas", "O cartão nunca passa pelo CRM"],
-    ["doc", "LGPD", "Exporte ou apague os dados quando quiser"],
-    ["vault", "Dados isolados", "Cada empresa separada das outras"]
+    ["doc", "Registro de acessos", "Fica registrado quem acessou e quando"],
+    ["card", "Empresa isolada", "Os dados de cada empresa ficam separados de todas as outras"]
   ];
   $("safe").innerHTML = safe.map(function (f, i) {
     return '<li class="lock" data-i="' + i + '" tabindex="0" title="' + esc(f[2]) + '"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
