@@ -90,6 +90,20 @@ var NICHES = {
     back: "Cliente que volta para um novo projeto ganha um card novo, ligado ao histórico anterior.",
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   },
+  imobiliaria: {
+    label: "Imobiliárias & Corretores",
+    c: "cliente", cs: "clientes", a: "visita", as: "visitas",
+    title: "Nenhum interessado no imóvel fica sem resposta.",
+    lead: "O CRM da imobiliária que recebe contatos pelo WhatsApp, pelo Instagram e pelos anúncios. Cada interessado vira um card, a IA responde sobre o imóvel e agenda a visita, e o corretor acompanha até a proposta e o contrato.",
+    howSub: "Para imobiliárias, corretores autônomos, incorporadoras e administradoras de aluguel.",
+    roles: "Corretores, captação, atendimento",
+    ai: "Responde sobre o imóvel, pergunta o que a pessoa procura (bairro, quartos, valor) e agenda a visita. Chama o corretor na hora da proposta ou do financiamento.",
+    team: "O corretor assume",
+    track: "Visitas marcadas, propostas em andamento, contratos fechados e os corretores que mais convertem.",
+    who: ["Para o corretor autônomo ou em dupla", "Para imobiliárias com 2 a 4 corretores", "Para imobiliárias com até 6 pessoas", "Para imobiliárias e incorporadoras com equipe grande"],
+    back: "Cliente que volta para comprar ou alugar outro imóvel ganha um card novo, ligado ao histórico anterior.",
+    privacy: "Cada corretor vê só os clientes que você liberar."
+  },
   digital: {
     label: "Mercado Digital",
     c: "lead", cs: "leads", a: "call", as: "calls",
@@ -119,7 +133,7 @@ var NICHES = {
     privacy: "Cada pessoa da equipe vê só o que você liberar."
   }
 };
-var NICHE_ORDER = ["terapias", "odontologia", "saude", "arquitetura", "digital", "servicos"];
+var NICHE_ORDER = ["terapias", "odontologia", "saude", "imobiliaria", "arquitetura", "digital", "servicos"];
 
 // ---------------------------------------------------------------------------
 var $ = function (id) { return document.getElementById(id); };
@@ -295,11 +309,13 @@ function renderSections(n) {
       var lostYear = Math.round(lostMonth * 12);
       $("calc-lost").textContent = lostYear.toLocaleString("pt-BR");
       $("calc-lost-word").textContent = lostYear === 1 ? fill("{c}", n) : fill("{cs}", n);
-      var plan = PLANS[0].mensal.price;
+      var ideal = PLANS.filter(function (p) { return p.tag; })[0] || PLANS[1];
+      var plan = ideal.mensal.price;
       var times = Math.floor(month / plan);
+      var nm = "O FLUXO VIII " + esc(ideal.name.replace("Magnet ", "")) + ", o plano mais escolhido, custa <strong>R$ " + brl(plan) + "/mês</strong>.";
       $("calc-vs").innerHTML = times >= 2
-        ? "O FLUXO VIII Start custa <strong>R$ " + brl(plan) + "/mês</strong>. A perda é <strong>" + times + " vezes</strong> esse valor."
-        : "O FLUXO VIII Start custa <strong>R$ " + brl(plan) + "/mês</strong>. Um único " + esc(fill("{c}", n)) + " recuperado já paga o mês.";
+        ? nm + " A perda é <strong>" + times + " vezes</strong> esse valor."
+        : nm + " Um único " + esc(fill("{c}", n)) + " recuperado já paga o mês.";
       box.classList.toggle("hot", k >= 3);
     };
     if ($("calc-leads-label")) $("calc-leads-label").textContent = fill("{Cs} novos por semana", n);
@@ -337,6 +353,7 @@ function renderSections(n) {
   var cases = [
     ["Clínica de saúde", "A recepção anotava pedidos do WhatsApp no papel e muita gente ficava sem retorno.", "Cada mensagem vira card no funil, o horário entra na agenda e o lembrete sai pelo WhatsApp na véspera."],
     ["Consultório de psicologia", "A terapeuta respondia entre uma sessão e outra e perdia contatos fora do horário.", "A IA tira dúvidas fora do expediente, oferece a primeira sessão e chama a terapeuta quando o assunto pede uma pessoa."],
+    ["Imobiliária", "Os interessados chegavam dos anúncios e do Instagram e cada corretor anotava do seu jeito.", "Cada interessado vira um card com o imóvel de interesse, a IA agenda a visita e o gestor vê quem está com cada cliente."],
     ["Escritório de arquitetura", "Briefings chegavam espalhados entre Instagram, e-mail e WhatsApp.", "O link do formulário na bio leva o briefing direto para o funil, e a proposta sai pelo próprio CRM."],
     ["Infoprodutor com closers", "Os closers disputavam leads numa planilha e ninguém sabia quem tinha respondido.", "Quem responde primeiro vira o responsável, e o ranking da equipe aparece no painel."],
     ["Consultoria", "O sócio pedia relatório toda segunda e alguém perdia a manhã montando planilha.", "O painel é compartilhado por link e o sócio acompanha os números sem precisar de acesso ao CRM."]
@@ -725,6 +742,30 @@ form.addEventListener("submit", function (e) {
 // ---------------------------------------------------------------------------
 buildChips();
 renderNiche(current);
+// Menu "Para quem": as áreas atendidas
+(function () {
+  var btn = document.querySelector(".dd-btn"), menu = $("dd-niches");
+  if (!btn || !menu) return;
+  var onIndex = !!$("niche-chips");
+  menu.innerHTML = NICHE_ORDER.map(function (id) {
+    var n = NICHES[id];
+    return '<a href="/?para=' + id + '#inicio" data-dd="' + id + '"><b>' + esc(n.label) + "</b><span>" + esc((function (t) { t = t.replace(/^Para /, "").replace(/\.$/, ""); return t.charAt(0).toUpperCase() + t.slice(1); })(n.howSub)) + "</span></a>";
+  }).join("");
+  var close = function () { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+  btn.addEventListener("click", function (e) { e.stopPropagation(); var open = menu.hidden; menu.hidden = !open; btn.setAttribute("aria-expanded", String(open)); });
+  document.addEventListener("click", function (e) { if (!menu.contains(e.target)) close(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { close(); btn.focus(); } });
+  menu.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-dd]");
+    if (!a || !onIndex) return;
+    e.preventDefault();
+    close();
+    renderNiche(a.dataset.dd);
+    store.set("fluxo-area", a.dataset.dd);
+    var top = $("inicio"); if (top) top.scrollIntoView({ behavior: "smooth" });
+  });
+})();
+
 if (form) {
   var askedSubject = params.get("assunto");
   if (askedSubject === "demonstracao" || askedSubject === "especialista") {

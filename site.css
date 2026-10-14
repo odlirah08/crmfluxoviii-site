@@ -617,3 +617,17 @@ footer .wrap{display:grid;gap:22px}
   .foot-pay{margin-left:0}
 }
 @media (max-width:600px){.foot-links{gap:8px 16px}.foot-links a{border-left:0;padding:0}}
+
+/* Menu "Para quem" */
+.nav{align-items:center}
+.nav-dd{position:relative}
+.dd-btn{display:inline-flex;align-items:center;gap:4px;padding:0;border:0;background:none;color:var(--muted);font:inherit;cursor:pointer}
+.dd-btn:hover,.dd-btn[aria-expanded="true"]{color:var(--ink)}
+.dd-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.dd-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.dd-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);width:min(560px,90vw);display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:10px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(11,31,74,.45);z-index:40}
+.dd-menu[hidden]{display:none}
+.dd-menu a{display:grid;gap:2px;padding:10px 12px;border-radius:12px;color:var(--ink)}
+.dd-menu a:hover{background:color-mix(in srgb,var(--gold) 10%,var(--surface))}
+.dd-menu b{font-size:15px}
+.dd-menu span{font-size:13px;color:var(--muted);line-height:1.35}
