@@ -521,3 +521,9 @@ footer a:hover{text-decoration:underline}
 :root[data-theme="dark"] .calc-kicker,:root[data-theme="dark"] .calc-big{color:#FF8A80}
 @media (max-width:560px){.calc-inputs{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){.diag-calc{animation:none}}
+
+.calc-parts{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px;font-size:14px}
+.calc-parts li{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px dashed color-mix(in srgb,#B3261E 20%,var(--line));color:var(--muted)}
+.calc-parts li b{color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc-parts li.sum{border-bottom:0;padding-top:6px;color:var(--ink);font-weight:700}
+.calc-parts li.sum b{color:#C2412F}

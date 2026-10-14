@@ -236,6 +236,14 @@ function renderSections(n) {
     "Contatos do WhatsApp, do Instagram e do site ficam em lugares diferentes.",
     fill("Já deixou de chamar de volta um {c} que tinha interesse.", n)
   ];
+  // Quanto cada situação costuma custar (parte dos contatos que se perde) e o nome curto na soma
+  var diagCost = [
+    [0.10, "Demora para responder"],
+    [0.05, "Ninguém sabe quem atende quem"],
+    [0.03, "Números só na planilha"],
+    [0.06, "Contatos espalhados"],
+    [0.08, fill("{C} sem retorno", n)]
+  ];
   var checked = {};
   if ($("diag-list")) {
     $("diag-list").innerHTML = diag.map(function (d, i) {
@@ -258,21 +266,28 @@ function renderSections(n) {
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var step = function (now) {
         var k = reduce ? 1 : Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
-        el.textContent = money(from + (to - from) * e);
-        if (k < 1) animT = requestAnimationFrame(step); else lastShown = to;
+        var cur = from + (to - from) * e;
+        el.textContent = money(cur);
+        lastShown = cur;
+        if (k < 1) animT = requestAnimationFrame(step);
       };
       animT = requestAnimationFrame(step);
     };
     var calc = function () {
-      var k = document.querySelectorAll("#diag-list input:checked").length;
+      var on = Array.prototype.map.call(document.querySelectorAll("#diag-list input:checked"), function (el) { return Number(el.dataset.i); });
+      var k = on.length;
       var box = $("diag-calc");
       if (!box) return;
       box.hidden = k === 0;
       if (!k) { lastShown = 0; return; }
       var leads = Number($("calc-leads").value), ticket = Number($("calc-ticket").value);
-      var rate = Math.min(0.06 * k, 0.3);
-      var lostMonth = leads * 4.3 * rate;
-      var month = lostMonth * ticket;
+      // Soma de cada situação marcada: contatos por mês × parte perdida × valor de um cliente
+      var perMonthLeads = leads * 4.3;
+      var parts = on.map(function (i) { var c = diagCost[i] || [0.06, ""]; return { label: c[1], lost: perMonthLeads * c[0], value: perMonthLeads * c[0] * ticket }; });
+      var lostMonth = parts.reduce(function (a, p) { return a + p.lost; }, 0);
+      var month = parts.reduce(function (a, p) { return a + p.value; }, 0);
+      if ($("calc-parts")) $("calc-parts").innerHTML = parts.map(function (p) { return "<li><span>" + esc(p.label) + "</span><b>+ " + money(p.value) + "</b></li>"; }).join("") +
+        (parts.length > 1 ? '<li class="sum"><span>Total por mês</span><b>' + money(month) + "</b></li>" : "");
       $("calc-leads-out").textContent = leads;
       $("calc-ticket-out").textContent = money(ticket);
       countTo($("calc-month"), month);
