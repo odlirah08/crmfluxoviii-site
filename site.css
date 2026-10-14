@@ -485,3 +485,17 @@ footer a:hover{text-decoration:underline}
 .testi-list .who{margin-top:12px;font-size:14px;color:var(--muted)}
 .testi-list .who b{color:var(--ink)}
 @media (prefers-reduced-motion: reduce){.hook-visual .hk-step{animation:none}.meter span{transition:none}}
+
+/* Telefone com país (DDI) */
+.phone-row{display:flex;gap:8px}
+.phone-row select{flex:0 0 104px;width:104px;min-width:0}
+.phone-row input{flex:1 1 auto;min-width:0}
+
+/* Diferenciais acima dos planos */
+.edge{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:6px 0 26px}
+.edge-item{position:relative;padding:20px 20px 18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.edge-item::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)}
+.edge-item svg{width:30px;height:30px;fill:none;stroke:var(--gold-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;padding:6px;box-sizing:content-box;border-radius:12px;background:var(--gold-soft)}
+.edge-item b{display:block;margin-top:12px;font-family:var(--display);font-weight:600;font-size:17px;line-height:1.2}
+.edge-item span{display:block;margin-top:6px;color:var(--muted);font-size:15px;line-height:1.5}
+@media (max-width:860px){.edge{grid-template-columns:1fr}}

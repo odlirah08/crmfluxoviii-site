@@ -244,6 +244,23 @@
         <h2>Planos</h2>
         <p>Escolha pelo tamanho da equipe. Em seguida você escolhe entre mensal e anual. Dá para trocar de plano quando quiser.</p>
       </div>
+      <div class="edge" aria-label="Por que o FLUXO VIII sai mais em conta">
+        <div class="edge-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5"/></svg>
+          <b>Pacote fechado, não por usuário</b>
+          <span>A equipe do plano já está no preço. Nada de cobrança por pessoa nem surpresa na fatura quando alguém entra.</span>
+        </div>
+        <div class="edge-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 7a4 4 0 1 1-3.9 4.9L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0 1 15 7z"/><circle cx="16.5" cy="9.5" r="1"/></svg>
+          <b>Créditos de IA acabaram? Conecte a sua</b>
+          <span>Ligue a sua própria chave de IA e o atendimento continua na hora, sem pagar nada a mais para a gente.</span>
+        </div>
+        <div class="edge-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <b>Tudo liberado em todos os planos</b>
+          <span>Funil, WhatsApp, agenda, painel e Atendente IA em qualquer plano. O que muda é o tamanho da equipe e os créditos.</span>
+        </div>
+      </div>
       <div class="plans" id="plans"></div>
     </div>
   </section>
@@ -293,7 +310,7 @@
         </fieldset>
         <div class="grid2">
           <div class="fld"><label for="f-name">Seu nome</label><input id="f-name" name="name" autocomplete="name" maxlength="120" required></div>
-          <div class="fld"><label for="f-phone">WhatsApp com DDD</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" required></div>
+          <div class="fld"><label for="f-phone">WhatsApp com DDD</label><div class="phone-row"><select id="f-ddi" name="ddi" aria-label="País (DDI)"><option value="55">🇧🇷 +55</option></select><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" required></div></div>
         </div>
         <div class="grid2">
           <div class="fld"><label for="f-email">E-mail <small>(opcional)</small></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="160"></div>

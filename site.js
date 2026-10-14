@@ -272,7 +272,8 @@ function renderSections(n) {
     ["“Não tenho tempo para configurar.”", "Você escolhe a sua área e o funil, as mensagens e o catálogo já vêm prontos. A sua lista de contatos entra por planilha."],
     ["“Minha equipe não vai usar.”", "O chat é parecido com o WhatsApp que todo mundo já usa, e cada pessoa vê só o que precisa, no computador ou no celular."],
     ["“Já uso o WhatsApp no meu celular.”", "Você conecta o mesmo número pelo QR Code e continua usando. A diferença é que nada mais se perde."],
-    ["“Deve ser caro.”", fill("O Start custa R$ " + brl(PLANS[0].mensal.price) + " por mês. Menos do que um único {c} que deixa de fechar por falta de resposta.", n)]
+    ["“Deve ser caro.”", fill("O Start custa R$ " + brl(PLANS[0].mensal.price) + " por mês. Menos do que um único {c} que deixa de fechar por falta de resposta. E o preço é do pacote: a equipe do plano já está incluída, sem cobrança por usuário.", n)],
+    ["“E se os créditos de IA acabarem?”", "O atendimento não para: você conecta a sua própria chave de IA em Ajustes e segue usando na hora, sem pagar nada a mais para a gente. Se preferir, é só subir de plano."]
   ];
   // Exemplos de uso (cenários, não depoimentos)
   var cases = [
@@ -444,7 +445,21 @@ document.querySelectorAll("[data-subject]").forEach(function (a) {
 });
 
 if (form) {
+// País do telefone: já vem +55; quem é de fora troca
+var DDIS = [["55","🇧🇷 +55"],["351","🇵🇹 +351"],["1","🇺🇸 +1"],["54","🇦🇷 +54"],["595","🇵🇾 +595"],["598","🇺🇾 +598"],["56","🇨🇱 +56"],["57","🇨🇴 +57"],["591","🇧🇴 +591"],["51","🇵🇪 +51"],["52","🇲🇽 +52"],["34","🇪🇸 +34"],["39","🇮🇹 +39"],["44","🇬🇧 +44"],["49","🇩🇪 +49"],["33","🇫🇷 +33"],["41","🇨🇭 +41"],["353","🇮🇪 +353"],["81","🇯🇵 +81"],["61","🇦🇺 +61"]];
+var ddiSel = $("f-ddi");
+if (ddiSel) {
+  ddiSel.innerHTML = DDIS.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + "</option>"; }).join("");
+  ddiSel.value = "55";
+  ddiSel.addEventListener("change", function () {
+    $("f-phone").value = "";
+    $("f-phone").placeholder = ddiSel.value === "55" ? "(11) 99999-9999" : "Número";
+    $("f-phone").focus();
+  });
+}
+var ddiOf = function () { return ddiSel ? ddiSel.value : "55"; };
 $("f-phone").addEventListener("input", function (e) {
+  if (ddiOf() !== "55") { e.target.value = e.target.value.replace(/[^\d\s-]/g, "").slice(0, 18); return; }
   var d = e.target.value.replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "").slice(0, 11);
   var out = d;
   if (d.length > 2) out = "(" + d.slice(0, 2) + ") " + d.slice(2);
@@ -472,7 +487,9 @@ form.addEventListener("submit", function (e) {
   var phone = val("f-phone").replace(/\D/g, "");
   var email = val("f-email");
   if (name.length < 2) { showMsg("err", "Informe seu nome completo."); $("f-name").focus(); return; }
-  if (phone.length < 10 || phone.length > 11) { showMsg("err", "Informe seu WhatsApp com DDD."); $("f-phone").focus(); return; }
+  var ddi = ddiOf();
+  var phoneOk = ddi === "55" ? phone.length === 10 || phone.length === 11 : phone.length >= 6 && phone.length <= 15;
+  if (!phoneOk) { showMsg("err", ddi === "55" ? "Informe seu WhatsApp com DDD." : "Informe seu WhatsApp completo."); $("f-phone").focus(); return; }
   if ((email || isFicha) && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showMsg("err", "Confira o e-mail."); $("f-email").focus(); return; }
   if (isFicha) {
     if (!$("f-niche").value) { showMsg("err", "Escolha o seu ramo de atividade."); $("f-niche").focus(); return; }
@@ -490,7 +507,7 @@ form.addEventListener("submit", function (e) {
   var body = isFicha
     ? {
         subject: "ficha",
-        name: name, phone: phone, email: email,
+        name: name, phone: phone, ddi: ddi, email: email,
         niche: $("f-niche").value, nicheOther: val("f-niche-other"),
         hasEmployees: radio("hasEmployees"), employees: radio("hasEmployees") === "sim" ? Number(val("f-employees")) : 0,
         triedBefore: radio("triedBefore"), triedHow: val("f-tried"),
@@ -498,7 +515,7 @@ form.addEventListener("submit", function (e) {
       }
     : {
         subject: radio("subject") || "especialista",
-        name: name, phone: phone, email: email,
+        name: name, phone: phone, ddi: ddi, email: email,
         company: val("f-company"),
         niche: $("f-niche").value || (current !== "geral" ? current : "outro"),
         team: $("f-team").value,
