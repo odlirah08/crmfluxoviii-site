@@ -164,6 +164,17 @@ function renderNiche(id) {
   if (sel && id !== "geral" && !sel.value) sel.value = id;
 }
 
+// Acende cada etapa da linha do tempo quando ela aparece na tela
+function watchFlow() {
+  var nodes = document.querySelectorAll("#flow .node");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) { nodes.forEach(function (el) { el.classList.add("on"); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -18% 0px" });
+  nodes.forEach(function (el) { io.observe(el); });
+}
+
 function renderSections(n) {
 
   var steps = [
@@ -174,18 +185,23 @@ function renderSections(n) {
   ];
   $("steps").innerHTML = steps.map(function (s) { return "<li><h3>" + esc(s[0]) + "</h3><p>" + esc(s[1]) + "</p></li>"; }).join("");
 
-  var feats = [
-    ["Até 3 números de WhatsApp", fill("API oficial da Meta ou QR Code. A resposta sai pelo mesmo número em que o {c} escreveu.", n)],
-    ["Atendente IA", "Liga e desliga quando quiser, com horário e limites do que ela pode fazer. Pausa sozinha quando alguém da equipe assume a conversa."],
-    ["Funil que se atualiza sozinho", fill("A última mensagem aparece no card de cada {c}. " + n.back, n)],
-    ["Formulários com link", "Para a bio, o anúncio ou o site. Quem responde entra direto na etapa certa do funil."],
-    ["Painel do gestor", fill("Vendas, conversão, tempo da primeira resposta, origem dos {cs} e horários de pico, por pessoa da equipe.", n)],
-    ["Acesso por função", n.roles + ": você escolhe quais abas cada pessoa vê. O administrador vê tudo."],
-    ["Agenda", fill("{As}, lembretes e integração com o Google Agenda.", n)],
-    ["Vendas e cobranças", "Propostas, vendas e o que falta receber, com lembrete de pagamento pelo WhatsApp."],
-    ["Créditos de IA de bônus", "Pagando a assinatura até o vencimento, você ganha créditos de IA extras todo mês."]
+  // Linha do tempo: uma mensagem do "oi" até a venda (storytelling dos recursos)
+  var flow = [
+    ["07:58", "chegou", fill("Um {c} manda “oi” no WhatsApp", n), "O contato entra sozinho no funil, com nome, número e de onde veio. Ninguém precisa digitar nada. Até 3 números da empresa no mesmo lugar."],
+    ["07:58", "ia", "A IA responde em segundos", fill("Tira as dúvidas, apresenta os {as} e já oferece um horário, só quando e até onde você deixar. Se alguém da equipe entra na conversa, ela sai de cena.", n)],
+    ["08:15", "equipe", "A equipe assume do ponto certo", n.roles + ": cada pessoa vê só o que precisa, e quem responde primeiro vira o responsável. A última mensagem aparece no card, sem abrir o chat."],
+    ["10:40", "agenda", "Horário marcado, lembrete automático", "O horário vai para a agenda e o lembrete sai pelo WhatsApp na véspera. Quem preenche um formulário com link na bio ou no anúncio já cai na etapa certa do funil."],
+    ["16:20", "venda", "Proposta enviada, venda registrada", "Proposta pronta em poucos cliques, venda lançada e o que falta receber com lembrete de pagamento automático."],
+    ["19:00", "painel", "Você fecha o dia olhando um painel", fill("Faturamento, conversão, tempo da primeira resposta, origem dos {cs} e o ranking da equipe. Peça um indicador novo para a IA e compartilhe o painel com o sócio.", n)]
   ];
-  $("feats").innerHTML = feats.map(function (f) { return '<div class="feat"><h3>' + esc(f[0]) + "</h3><p>" + esc(f[1]) + "</p></div>"; }).join("");
+  $("flow").innerHTML = flow.map(function (f, i) {
+    return '<li class="node" data-kind="' + f[1] + '"><span class="dot" aria-hidden="true"></span>' +
+      '<div class="node-card"><span class="time">' + esc(f[0]) + '</span><h3>' + esc(f[2]) + '</h3><p>' + esc(f[3]) + '</p></div></li>';
+  }).join("");
+  var chips = ["Até 3 números de WhatsApp", "Atendente IA com horário", "Funil por etapas", "Formulários com link", "Agenda e lembretes", "Propostas e vendas", "Cobrança pelo WhatsApp", "Painel do gestor", "Indicadores feitos pela IA", "Acesso por função", "Importação de planilha", "App no celular e tablet", "Bônus de IA pagando em dia"];
+  $("chips").innerHTML = chips.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
+  $("story-cta-title").textContent = fill("Seu próximo {c} já está digitando.", n);
+  watchFlow();
 
   var safe = [
     ["Acesso protegido", "Entrada com e-mail e senha ou conta Google. Membros da equipe só entram por convite do administrador."],
@@ -286,16 +302,24 @@ $("c-talk").addEventListener("click", function () {
 // Perguntas frequentes
 function renderFaq() {
   var n = NICHES[current];
+  var users = PLANS.map(function (p) { return p.name.replace("Magnet ", "") + " até " + (p.users.match(/\d+/) || [""])[0]; });
+  var ai = PLANS.map(function (p) { return p.name.replace("Magnet ", "") + " " + (p.ai.match(/[\d.]+/) || [""])[0]; });
+  var bonus = PLANS.map(function (p) { return "+" + p.bonus.toLocaleString("pt-BR") + " no " + p.name.replace("Magnet ", ""); });
+  var list = function (arr) { return arr.slice(0, -1).join(", ") + " e " + arr[arr.length - 1]; };
   var faq = [
-    ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site e um especialista mostra o FLUXO VIII funcionando com o funil da sua área."],
-    ["Como recebo o acesso depois de pagar?", "Quando o Asaas confirma o pagamento, enviamos um link pessoal para você criar a conta, por e-mail e WhatsApp. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
-    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês. Nos dois você ganha os créditos de IA de bônus pagando até o vencimento."],
-    ["Como ganho créditos de IA extras?", "Pagando a assinatura até o vencimento, você ganha créditos de IA a mais todo mês até o próximo vencimento: +1.100 no Start, +1.650 no Pro, +2.800 no Gold e +4.950 no Black. No cartão, a cobrança cai no dia e o bônus vem automático."],
-    ["Preciso da API oficial do WhatsApp?", "Não. Você pode conectar pelo QR Code, como no WhatsApp Web, ou pela API oficial da Meta. Dá para usar os dois, até 3 números."],
-    [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e o que ela pode fazer, e ela para de responder quando alguém da equipe assume a conversa."],
-    ["É seguro?", "Sim. Cada empresa só vê os próprios dados, cada pessoa da equipe vê só o que o administrador liberar, todo acesso é criptografado e o pagamento acontece fora do CRM, no Asaas."],
+    ["Posso ver o CRM antes de assinar?", "Pode. Agende uma demonstração aqui no site: um especialista mostra o FLUXO VIII funcionando com o funil da sua área e tira as suas dúvidas."],
+    ["Como recebo o acesso depois de pagar?", "Assim que o Asaas confirma o pagamento, você recebe um link pessoal para criar a sua conta. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
+    ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano."],
+    ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês."],
+    ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente; só a IA espera a renovação."],
+    ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Dá para ligar até 3 números por empresa, cada um com um nome, como Recepção ou Financeiro."],
+    [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e até onde ela vai (tirar dúvidas, fazer o primeiro atendimento ou também agendar), e ela para de responder quando alguém da equipe assume a conversa."],
+    [fill("Consigo trazer os meus {cs} de outro sistema?", n), fill("Sim. Você importa uma planilha (do Excel, do Google Planilhas ou exportada de outro CRM) com os seus {cs}, já no funil e na etapa certa, e também a lista dos seus serviços com os valores.", n)],
+    ["Funciona no celular e no tablet?", "Funciona no computador, no tablet e no celular, direto no navegador. Também dá para instalar como aplicativo na tela inicial, sem baixar nada da loja."],
+    ["É seguro?", "Sim. Cada empresa só vê os próprios dados, cada pessoa da equipe vê só o que o administrador liberar e todo acesso é criptografado. O FLUXO VIII segue a LGPD e o pagamento é feito no Asaas, fora do CRM."],
+    ["Posso mudar de plano depois?", "Pode. Dentro do CRM, em Planos e upgrade, você pede a mudança e o nosso time faz a troca com você."],
     ["O que acontece se o pagamento atrasar?", "Você tem 2 dias de tolerância com tudo funcionando e avisos no sistema. Depois disso a conta fica só para consulta até o pagamento ser feito. Nada é apagado."],
-    ["Posso cancelar?", "Pode, a qualquer momento. O acesso continua até o fim do período já pago, e você pode exportar seus dados antes de sair."]
+    ["Posso cancelar?", "Pode, a qualquer momento e sem multa. Antes de cancelar, você pode exportar todos os seus dados. Depois do cancelamento, a conta fica só para consulta."]
   ];
   $("faq").innerHTML = faq.map(function (f) { return "<details><summary>" + esc(f[0]) + "</summary><p>" + esc(f[1]) + "</p></details>"; }).join("");
 }
