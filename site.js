@@ -222,34 +222,59 @@ function renderSections(n) {
     doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 14l2 2 3.5-4"/>',
     vault: '<ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/>'
   };
-  var safe = [
-    ["wire", "Conexão criptografada", "Todo o tráfego entre o seu aparelho e o servidor é criptografado (HTTPS)"],
-    ["vault", "Dados criptografados", "As informações ficam guardadas criptografadas nos servidores do Google Cloud"],
-    ["key", "Acesso por convite", "Só entra quem o administrador chamar"],
-    ["team", "Permissão por pessoa", "Cada um vê só o que precisa"],
-    ["doc", "Registro de acessos", "Fica registrado quem acessou e quando"],
-    ["card", "Empresa isolada", "Os dados de cada empresa ficam separados de todas as outras"]
-  ];
-  $("safe").innerHTML = safe.map(function (f, i) {
-    return '<li class="lock" data-i="' + i + '" tabindex="0" title="' + esc(f[2]) + '"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICONS[f[0]] + '</svg></span>' +
-      '<strong>' + esc(f[1]) + '</strong><span class="sr">: ' + esc(f[2]) + '</span></li>';
-  }).join("");
+  // Segurança: só os anéis (6 camadas) acendendo em onda
   var rings = "";
-  for (var i = 0; i < safe.length; i++) rings += '<circle class="ring r' + i + '" data-i="' + i + '" cx="160" cy="160" r="' + (150 - i * 21) + '"/>';
+  for (var i = 0; i < 6; i++) rings += '<circle class="ring r' + i + '" cx="160" cy="160" r="' + (150 - i * 21) + '"/>';
   rings += '<circle class="core-dot" cx="160" cy="160" r="30"/><g transform="translate(145 143)" class="core-ico"><svg width="30" height="32" viewBox="0 0 24 24">' + ICONS.key + '</svg></g>';
   $("rings").innerHTML = rings;
-  var hl = function (i) {
-    document.querySelectorAll("#rings .ring").forEach(function (c) { c.classList.toggle("hot", c.getAttribute("data-i") === String(i)); });
-    document.querySelectorAll("#safe .lock").forEach(function (l) { l.classList.toggle("hot", l.getAttribute("data-i") === String(i)); });
-    $("rings").classList.toggle("paused", i !== null);
-  };
-  document.querySelectorAll("#safe .lock").forEach(function (l) {
-    var i = l.getAttribute("data-i");
-    l.addEventListener("mouseenter", function () { hl(i); });
-    l.addEventListener("focus", function () { hl(i); });
-    l.addEventListener("mouseleave", function () { hl(null); });
-    l.addEventListener("blur", function () { hl(null); });
-  });
+
+  // Diagnóstico rápido
+  var diag = [
+    fill("Um {c} mandou mensagem e demorou para ter resposta (ou não teve).", n),
+    "A equipe não sabe com certeza quem está falando com quem.",
+    "Para saber quanto vendeu no mês, alguém precisa abrir planilha.",
+    "Contatos do WhatsApp, do Instagram e do site ficam em lugares diferentes.",
+    fill("Já deixou de chamar de volta um {c} que tinha interesse.", n)
+  ];
+  var checked = {};
+  if ($("diag-list")) {
+    $("diag-list").innerHTML = diag.map(function (d, i) {
+      return '<li><label><input type="checkbox" data-i="' + i + '"' + (checked[i] ? " checked" : "") + '><span>' + esc(d) + "</span></label></li>";
+    }).join("");
+    var upd = function () {
+      var k = document.querySelectorAll("#diag-list input:checked").length;
+      $("diag-bar").style.width = (k / diag.length * 100) + "%";
+      $("diag-bar").className = k >= 3 ? "hi" : k ? "mid" : "";
+      $("diag-result").innerHTML = k === 0 ? "Marque as frases acima para ver o resultado." :
+        k <= 2 ? "<strong>Atenção:</strong> " + esc(fill("já tem {c} escapando pelo caminho. Pouco por dia vira muito no fim do mês.", n)) :
+        "<strong>Alerta:</strong> " + esc(fill("o seu atendimento está perdendo {cs} toda semana. Veja abaixo onde isso acontece e como resolver.", n));
+    };
+    $("diag-list").addEventListener("change", function (e) { var t = e.target; if (t && t.dataset) checked[t.dataset.i] = t.checked; upd(); });
+    upd();
+  }
+  if ($("diag-title")) $("diag-title").textContent = fill("O seu atendimento está deixando {cs} escaparem?", n);
+
+  // Onde os clientes se perdem
+  var leaks = [
+    ["A mensagem sem resposta", fill("Quem não é respondido logo procura o próximo da lista. O {c} não reclama: só não volta.", n)],
+    ["O retorno que ninguém fez", "Interessado que pediu um tempo e nunca mais foi chamado. Sem lembrete, ele cai no esquecimento."],
+    ["A planilha paralela", "Cada pessoa anota de um jeito, em um lugar. Ninguém confia no número e ninguém sabe o que está em aberto."],
+    ["A decisão no escuro", "Sem saber de onde vêm os contatos e quem converte, o investimento vai para o lugar errado."]
+  ];
+  if ($("leaks")) $("leaks").innerHTML = leaks.map(function (l, i) {
+    return '<li><span class="leak-n">0' + (i + 1) + '</span><h3>' + esc(l[0]) + '</h3><p>' + esc(l[1]) + "</p></li>";
+  }).join("");
+  if ($("pain-title")) $("pain-title").textContent = fill("Onde os {cs} se perdem no caminho", n);
+  if ($("hook-card")) $("hook-card").textContent = fill("Novo {c}", n);
+
+  // Objeções
+  var objs = [
+    ["“Não tenho tempo para configurar.”", "Você escolhe a sua área e o funil, as mensagens e o catálogo já vêm prontos. A sua lista de contatos entra por planilha."],
+    ["“Minha equipe não vai usar.”", "O chat é parecido com o WhatsApp que todo mundo já usa, e cada pessoa vê só o que precisa, no computador ou no celular."],
+    ["“Já uso o WhatsApp no meu celular.”", "Você conecta o mesmo número pelo QR Code e continua usando. A diferença é que nada mais se perde."],
+    ["“Deve ser caro.”", fill("O Start custa R$ " + brl(PLANS[0].mensal.price) + " por mês. Menos do que um único {c} que deixa de fechar por falta de resposta.", n)]
+  ];
+  if ($("obj-list")) $("obj-list").innerHTML = objs.map(function (o) { return "<li><h3>" + esc(o[0]) + "</h3><p>" + esc(o[1]) + "</p></li>"; }).join("");
 }
 
 function buildChips() {
