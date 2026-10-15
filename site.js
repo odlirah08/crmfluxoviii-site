@@ -448,12 +448,17 @@ var PER_SEAT = 199;
 function renderPerUser() {
   if (!$("per-user")) return;
   var team = 5, gold = PLANS[2];
-  var price = cycle === "anual" ? gold.anual.perMonth : gold.mensal.price;
+  var annual = cycle === "anual";
+  // Anual: compara o ano inteiro (12 × 5 × R$ 199) com o valor do plano anual
+  var other = PER_SEAT * team * (annual ? 12 : 1);
+  var ours = annual ? gold.anual.total : gold.mensal.price;
+  var per = annual ? "/ano" : "/mês";
+  var save = other - ours;
   $("per-user").innerHTML =
-    '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + (PER_SEAT * team).toLocaleString("pt-BR") + '<small>/mês</small></span><span class="pu-n">' + team + " pessoas × R$ " + PER_SEAT.toLocaleString("pt-BR") + "</span></div>" +
+    '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + brl(other).replace(/,00$/, "") + '<small>' + per + '</small></span><span class="pu-n">' + team + " pessoas × R$ " + PER_SEAT.toLocaleString("pt-BR") + (annual ? " × 12 meses" : "") + "</span></div>" +
     '<div class="pu-vs" aria-hidden="true">vs</div>' +
-    '<div class="pu-side good"><span class="pu-k">FLUXO VIII ' + esc(gold.name.replace("Magnet ", "Magnet ")) + '</span><span class="pu-v">R$ ' + brl(price) + '<small>/mês</small></span><span class="pu-n">a mesma equipe de ' + team + " pessoas, no pacote</span></div>" +
-    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário (e o agente de IA costuma ser cobrado à parte). Aqui a equipe e a IA já estão no preço do plano.</p>";
+    '<div class="pu-side good"><span class="pu-k">FLUXO VIII ' + esc(gold.name) + (annual ? " · anual" : "") + '</span><span class="pu-v">R$ ' + brl(ours) + '<small>' + per + '</small></span><span class="pu-n">a mesma equipe de ' + team + " pessoas, no pacote · economia de R$ " + brl(save) + (annual ? " no ano" : " por mês") + "</span></div>" +
+    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário por mês (e o agente de IA costuma ser cobrado à parte). Aqui a equipe e a IA já estão no preço do plano.</p>";
 }
 
 function renderCompare() {
