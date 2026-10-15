@@ -662,3 +662,7 @@ footer .wrap{display:grid;gap:22px}
 
 .foot-contact{font-size:14px}
 .foot-contact a{color:var(--ink);font-weight:600}
+
+.compare .zero{display:inline-block;padding:3px 9px;border-radius:999px;font-weight:800;font-size:13px;color:#0f7a4a;background:color-mix(in srgb,#16a34a 14%,transparent);white-space:nowrap}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .compare .zero{color:#6ee7a8}}
+:root[data-theme="dark"] .compare .zero{color:#6ee7a8}

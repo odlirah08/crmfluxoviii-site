@@ -7,13 +7,13 @@ var CRM_URL = "https://app.crmfluxoviii.tech";
 
 // ===== Planos e links de pagamento do Asaas =====
 var PLANS = [
-  { id: "start", name: "Magnet Start", users: "Até 2 usuários (1 administrador + 1)", ai: "300 créditos de IA por mês", bonus: 1100,
+  { id: "start", name: "Magnet Start", lines: 1, api: false, users: "Até 2 usuários (1 administrador + 1)", ai: "300 créditos de IA por mês", bonus: 1100,
     mensal: { price: 67.89, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 50.90, total: 610.80, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
-  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
+  { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", lines: 2, api: false, users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
     mensal: { price: 99.90, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 76.40, total: 916.80, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
-  { id: "gold", name: "Magnet Gold", users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
+  { id: "gold", name: "Magnet Gold", lines: 3, api: true, users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
     mensal: { price: 167.97, url: "https://www.asaas.com/000/c/bcdi9ol829a68rdy" }, anual: { perMonth: 127.90, total: 1534.80, url: "https://www.asaas.com/000/c/x4cjirokdf5vs10m" } },
-  { id: "black", name: "Magnet Black", users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
+  { id: "black", name: "Magnet Black", lines: 3, api: true, users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
     mensal: { price: 297.33, url: "https://www.asaas.com/000/c/r87eff0n9l749i51" }, anual: { perMonth: 226.90, total: 2722.80, url: "https://www.asaas.com/000/c/lh0cveg97nvjrcug" } }
 ];
 
@@ -211,7 +211,7 @@ function renderSections(n) {
 
   // Linha do tempo: uma mensagem do "oi" até a venda (storytelling dos recursos)
   var flow = [
-    ["07:58", "chegou", fill("Um {c} manda “oi” no WhatsApp", n), "O contato entra sozinho no funil, com nome, número e de onde veio. Ninguém precisa digitar nada. Até 3 números da empresa no mesmo lugar."],
+    ["07:58", "chegou", fill("Um {c} manda “oi” no WhatsApp", n), "O contato entra sozinho no funil, com nome, número e de onde veio. Ninguém precisa digitar nada. Até 3 números da empresa no mesmo lugar, conforme o plano."],
     ["07:58", "ia", "A IA responde em segundos", fill("Tira as dúvidas, apresenta os {as} e já oferece um horário, só quando e até onde você deixar. Se alguém da equipe entra na conversa, ela sai de cena.", n)],
     ["08:15", "equipe", "A equipe assume do ponto certo", n.roles + ": cada pessoa vê só o que precisa, e quem responde primeiro vira o responsável. A última mensagem aparece no card, sem abrir o chat."],
     ["10:40", "agenda", "Horário marcado, lembrete automático", "O horário vai para a agenda e o lembrete sai pelo WhatsApp na véspera. Quem preenche um formulário com link na bio ou no anúncio já cai na etapa certa do funil."],
@@ -222,7 +222,7 @@ function renderSections(n) {
     return '<li class="node" data-kind="' + f[1] + '"><span class="dot" aria-hidden="true"></span>' +
       '<div class="node-card"><span class="time">' + esc(f[0]) + '</span><h3>' + esc(f[2]) + '</h3><p>' + esc(f[3]) + '</p></div></li>';
   }).join("");
-  var chips = ["Até 3 números de WhatsApp", "Atendente IA com horário", "Funil por etapas", "Formulários com link", "Agenda e lembretes", "Propostas, vendas e cobranças", "Painel do gestor", "Indicadores feitos pela IA", "Acesso por função", "Importação de planilha", "App no celular e tablet", "Bônus de IA pagando em dia"];
+  var chips = ["De 1 a 3 números de WhatsApp", "Atendente IA com horário", "Funil por etapas", "Formulários com link", "Agenda e lembretes", "Propostas, vendas e cobranças", "Painel do gestor", "Indicadores feitos pela IA", "Acesso por função", "Importação de planilha", "App no celular e tablet", "Bônus de IA pagando em dia"];
   $("chips").innerHTML = chips.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
   $("story-cta-title").textContent = fill("Seu próximo {c} já está digitando.", n);
   watchFlow();
@@ -410,7 +410,8 @@ function annualOff(p) { return Math.floor((1 - p.anual.perMonth / p.mensal.price
 function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 
 var cycle = store.get("fluxo-ciclo") === "mensal" ? "mensal" : "anual";
-var MAX_FUNNELS = { start: "2", pro: "3", gold: "5", black: "ilimitados" };
+var MAX_FUNNELS = { start: "3", pro: "6", gold: "20", black: "50" };
+function linesText(p) { return p.lines + (p.lines === 1 ? " número" : " números") + " de WhatsApp"; }
 var maxUsers = function (p) { return Number((p.users.match(/\d+/) || [1])[0]); };
 var maxAdmins = function (p) { return Number(((p.users.match(/\((\d+)/) || [0, 1])[1])); };
 
@@ -433,7 +434,7 @@ function renderPlans() {
       '<p class="who">' + esc(who[i]) + "</p>" +
       '<div class="price"><span class="cur">R$</span><span class="val">' + brl(price) + '</span><span class="per">/mês</span></div>' + sub +
       '<p class="pp">Sai a <strong>R$ ' + brl(price / maxUsers(p)) + "</strong> por pessoa com a equipe completa</p>" +
-      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + (MAX_FUNNELS[p.id] === "ilimitados" ? "Funis ilimitados" : "Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)") + "</li><li>Todos os recursos do FLUXO VIII</li></ul>" +
+      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + linesText(p) + " (QR Code)</li><li>Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)</li>" + (p.api ? "<li>API oficial do WhatsApp (em breve)</li>" : "") + "<li>Todos os recursos do FLUXO VIII</li></ul>" +
       '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + (annual ? " anual" : " mensal") + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + (annual ? " anual" : " mensal") + "</button>" +
       "</article>";
   }).join("");
@@ -443,16 +444,16 @@ function renderPlans() {
 }
 
 // Comparação com quem cobra por usuário (preço de mercado de referência, sem citar marca)
-var PER_SEAT = 149;
+var PER_SEAT = 160;
 function renderPerUser() {
   if (!$("per-user")) return;
   var team = 5, gold = PLANS[2];
   var price = cycle === "anual" ? gold.anual.perMonth : gold.mensal.price;
   $("per-user").innerHTML =
-    '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + brl(PER_SEAT * team) + '<small>/mês</small></span><span class="pu-n">' + team + " pessoas × R$ " + brl(PER_SEAT) + "</span></div>" +
+    '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + (PER_SEAT * team).toLocaleString("pt-BR") + '<small>/mês</small></span><span class="pu-n">' + team + " pessoas × R$ " + PER_SEAT.toLocaleString("pt-BR") + "</span></div>" +
     '<div class="pu-vs" aria-hidden="true">vs</div>' +
     '<div class="pu-side good"><span class="pu-k">FLUXO VIII ' + esc(gold.name.replace("Magnet ", "Magnet ")) + '</span><span class="pu-v">R$ ' + brl(price) + '<small>/mês</small></span><span class="pu-n">a mesma equipe de ' + team + " pessoas, no pacote</span></div>" +
-    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + brl(PER_SEAT) + " por usuário. Aqui a equipe já está no preço do plano.</p>";
+    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário. Aqui a equipe já está no preço do plano.</p>";
 }
 
 function renderCompare() {
@@ -466,7 +467,7 @@ function renderCompare() {
     ["Usuários", PLANS.map(function (p) { return "até " + maxUsers(p); })],
     ["Administradores", PLANS.map(function (p) { return String(maxAdmins(p)); })],
     ["Custo por pessoa (equipe completa, mensal)", PLANS.map(function (p) { return "R$ " + brl(p.mensal.price / maxUsers(p)); })],
-    ["Cobrança por usuário a mais", PLANS.map(function () { return "não tem"; })],
+    ["Cobrança por usuário", PLANS.map(function () { return '<span class="zero">R$ 0 · equipe inclusa</span>'; })],
     ["Inteligência artificial"],
     ["Créditos de IA por mês", PLANS.map(function (p) { return (p.ai.match(/[\d.]+/) || [""])[0]; })],
     ["Bônus pagando até o vencimento", PLANS.map(function (p) { return "+" + p.bonus.toLocaleString("pt-BR"); })],
@@ -476,7 +477,8 @@ function renderCompare() {
     ["Funil e atendimento"],
     ["Funis (ex.: Vendas, CS)", PLANS.map(function (p) { return MAX_FUNNELS[p.id]; })],
     ["Card criado sozinho no CS quando a venda é ganha", all()],
-    ["Números de WhatsApp por empresa", PLANS.map(function () { return "até 3"; })],
+    ["Números de WhatsApp (QR Code)", PLANS.map(function (p) { return String(p.lines); })],
+    ["API oficial do WhatsApp (Meta)", PLANS.map(function (p) { return p.api ? "em breve" : "—"; })],
     ["Instagram Direct", all()],
     ["Formulários e link na bio", all()],
     ["Mensagens favoritas e modelos", all()],
@@ -595,7 +597,7 @@ function renderFaq() {
     ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano. Se a equipe crescer, você muda de plano dentro do próprio CRM, em Planos e upgrade."],
     ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês."],
     ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente, e você pode conectar a sua própria chave de IA em Ajustes para a IA seguir respondendo sem gastar créditos do plano."],
-    ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Dá para ligar até 3 números por empresa, cada um com um nome, como Recepção ou Financeiro."],
+    ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Cada plano tem a sua quantidade de números: Start 1, Pro 2, Gold e Black 3, cada um com um nome, como Recepção ou Financeiro. A API oficial da Meta vai chegar nos planos Gold e Black."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e até onde ela vai (tirar dúvidas, fazer o primeiro atendimento ou também agendar), e ela para de responder quando alguém da equipe assume a conversa."],
     [fill("Consigo trazer os meus {cs} de outro sistema?", n), fill("Sim. Você importa uma planilha (do Excel, do Google Planilhas ou exportada de outro CRM) com os seus {cs}, já no funil e na etapa certa, e também a lista dos seus serviços com os valores.", n)],
     ["Funciona no celular e no tablet?", "Funciona no computador, no tablet e no celular, direto no navegador. Também dá para instalar como aplicativo na tela inicial, sem baixar nada da loja."],
