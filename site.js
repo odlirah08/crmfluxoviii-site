@@ -8,13 +8,13 @@ var CRM_URL = "https://app.crmfluxoviii.tech";
 // ===== Planos e links de pagamento do Asaas =====
 var PLANS = [
   { id: "start", name: "Magnet Start", lines: 1, api: false, users: "Até 2 usuários (1 administrador + 1)", ai: "300 créditos de IA por mês", bonus: 1100,
-    mensal: { price: 67.89, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 50.90, total: 610.80, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
+    mensal: { price: 97.88, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 75.37, total: 904.44, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
   { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", lines: 2, api: false, users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
-    mensal: { price: 99.90, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 76.40, total: 916.80, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
+    mensal: { price: 147.88, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 113.87, total: 1366.44, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
   { id: "gold", name: "Magnet Gold", lines: 3, api: true, users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
-    mensal: { price: 167.97, url: "https://www.asaas.com/000/c/bcdi9ol829a68rdy" }, anual: { perMonth: 127.90, total: 1534.80, url: "https://www.asaas.com/000/c/x4cjirokdf5vs10m" } },
+    mensal: { price: 247.88, url: "https://www.asaas.com/000/c/bcdi9ol829a68rdy" }, anual: { perMonth: 190.87, total: 2290.44, url: "https://www.asaas.com/000/c/x4cjirokdf5vs10m" } },
   { id: "black", name: "Magnet Black", lines: 3, api: true, users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
-    mensal: { price: 297.33, url: "https://www.asaas.com/000/c/r87eff0n9l749i51" }, anual: { perMonth: 226.90, total: 2722.80, url: "https://www.asaas.com/000/c/lh0cveg97nvjrcug" } }
+    mensal: { price: 447.88, url: "https://www.asaas.com/000/c/r87eff0n9l749i51" }, anual: { perMonth: 344.87, total: 4138.44, url: "https://www.asaas.com/000/c/lh0cveg97nvjrcug" } }
 ];
 
 // ===== Textos por área (as mesmas áreas do CRM) =====
@@ -406,7 +406,7 @@ function buildChips() {
 // Planos → escolha mensal/anual → pagamento no Asaas
 // Desconto do anual em número inteiro, sempre arredondado para BAIXO (o real é igual ou maior):
 // com os preços de hoje todos ficam 23% (o real vai de 23,4% a 23,9%)
-function annualOff(p) { return Math.floor((1 - p.anual.perMonth / p.mensal.price) * 100); }
+function annualOff(p) { return Math.round((1 - p.anual.perMonth / p.mensal.price) * 100); }
 function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 
 var cycle = store.get("fluxo-ciclo") === "mensal" ? "mensal" : "anual";
@@ -444,7 +444,7 @@ function renderPlans() {
 }
 
 // Comparação com quem cobra por usuário (preço de mercado de referência, sem citar marca)
-var PER_SEAT = 160;
+var PER_SEAT = 199;
 function renderPerUser() {
   if (!$("per-user")) return;
   var team = 5, gold = PLANS[2];
@@ -453,7 +453,7 @@ function renderPerUser() {
     '<div class="pu-side bad"><span class="pu-k">CRM que cobra por usuário</span><span class="pu-v">R$ ' + (PER_SEAT * team).toLocaleString("pt-BR") + '<small>/mês</small></span><span class="pu-n">' + team + " pessoas × R$ " + PER_SEAT.toLocaleString("pt-BR") + "</span></div>" +
     '<div class="pu-vs" aria-hidden="true">vs</div>' +
     '<div class="pu-side good"><span class="pu-k">FLUXO VIII ' + esc(gold.name.replace("Magnet ", "Magnet ")) + '</span><span class="pu-v">R$ ' + brl(price) + '<small>/mês</small></span><span class="pu-n">a mesma equipe de ' + team + " pessoas, no pacote</span></div>" +
-    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário. Aqui a equipe já está no preço do plano.</p>";
+    '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário (e o agente de IA costuma ser cobrado à parte). Aqui a equipe e a IA já estão no preço do plano.</p>";
 }
 
 function renderCompare() {
