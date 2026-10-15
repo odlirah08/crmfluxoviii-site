@@ -8,13 +8,13 @@ var CRM_URL = "https://app.crmfluxoviii.tech";
 // ===== Planos e links de pagamento do Asaas =====
 var PLANS = [
   { id: "start", name: "Magnet Start", lines: 1, api: false, users: "Até 2 usuários (1 administrador + 1)", ai: "300 créditos de IA por mês", bonus: 1100,
-    mensal: { price: 97.88, url: "https://www.asaas.com/c/5t7o14q3kdi5t4lk" }, anual: { perMonth: 75.37, total: 904.44, url: "https://www.asaas.com/c/3lug36pfnr2hth0q" } },
+    mensal: { price: 97.88, url: "https://www.asaas.com/000/c/g18catwsh3zybau1" }, anual: { perMonth: 75.37, total: 904.44, url: "https://www.asaas.com/000/c/8snyckkvi8ezlo1e" } },
   { id: "pro", name: "Magnet Pro", tag: "Mais escolhido", lines: 2, api: false, users: "Até 4 usuários (2 administradores + 2)", ai: "1.000 créditos de IA por mês", bonus: 1650,
-    mensal: { price: 147.88, url: "https://www.asaas.com/c/4bvhzc5a6iu3ald9" }, anual: { perMonth: 113.87, total: 1366.44, url: "https://www.asaas.com/c/pzev1aubal2jigpw" } },
+    mensal: { price: 147.88, url: "https://www.asaas.com/000/c/evmq41q2k1yc7lwc" }, anual: { perMonth: 113.87, total: 1366.44, url: "https://www.asaas.com/000/c/duxa429xfjrh2908" } },
   { id: "gold", name: "Magnet Gold", lines: 3, api: true, users: "Até 6 usuários (2 administradores + 4)", ai: "2.000 créditos de IA por mês", bonus: 2800,
-    mensal: { price: 247.88, url: "https://www.asaas.com/000/c/bcdi9ol829a68rdy" }, anual: { perMonth: 190.87, total: 2290.44, url: "https://www.asaas.com/000/c/x4cjirokdf5vs10m" } },
+    mensal: { price: 247.88, url: "https://www.asaas.com/000/c/rk1kgcp1ymd5wah6" }, anual: { perMonth: 190.87, total: 2290.44, url: "https://www.asaas.com/000/c/6ifq4n1bugjcvqjq" } },
   { id: "black", name: "Magnet Black", lines: 3, api: true, users: "Até 20 usuários (5 administradores + 15)", ai: "3.000 créditos de IA por mês", bonus: 4950,
-    mensal: { price: 447.88, url: "https://www.asaas.com/000/c/r87eff0n9l749i51" }, anual: { perMonth: 344.87, total: 4138.44, url: "https://www.asaas.com/000/c/lh0cveg97nvjrcug" } }
+    mensal: { price: 447.88, url: "https://www.asaas.com/000/c/900x7vzmd0doae3h" }, anual: { perMonth: 344.87, total: 4138.44, url: "https://www.asaas.com/000/c/9yo7bpvz7ru2ztuc" } }
 ];
 
 // ===== Textos por área (as mesmas áreas do CRM) =====
@@ -512,7 +512,7 @@ function renderCredits() {
       '<div class="cr-card key"><p class="cr-t">Acabou? Recarregue na hora</p><ul class="cr-packs"><li><b>+1.000</b><span>R$ 19,90</span></li><li><b>+3.000</b><span>R$ 49,90</span></li><li><b>+10.000</b><span>R$ 149,90</span></li></ul><p class="cr-d">Compra dentro do CRM, por Pix, cartão ou boleto. Os créditos entram assim que o pagamento cai e valem até a virada do mês. Ou conecte a sua própria chave de IA e use sem limite de créditos.</p></div>' +
     "</div>" +
     '<div class="setup"><div class="setup-card"><p class="cr-t">Implantação gravada · Start e Pro</p><p class="cr-big">Incluída no plano</p><p class="cr-d">Vídeos curtos, passo a passo, para conectar o WhatsApp, montar o funil e ligar a IA. Acesso por 30 dias depois da compra.</p></div>' +
-    '<div class="setup-card gold"><p class="cr-t">Implantação assistida · Gold e Black</p><p class="cr-big">R$ 497 <small>pagamento único</small></p><p class="cr-d">Online, com hora marcada: a gente configura com você o funil, as mensagens prontas e os números de WhatsApp.</p></div></div>';
+    '<div class="setup-card gold"><p class="cr-t">Implantação assistida · Gold e Black</p><p class="cr-big">R$ 497 <small>pagamento único</small></p><p class="cr-d">Online, com hora marcada: a gente configura com você o funil, as mensagens prontas e os números de WhatsApp.</p><a class="btn gold" href="https://www.asaas.com/000/c/aoanuzgb2elwwbwg" target="_blank" rel="noopener" style="justify-self:start">Contratar a implantação</a></div></div>';
 }
 
 // Assinar: vai direto para o pagamento do período escolhido
