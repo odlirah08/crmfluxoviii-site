@@ -154,7 +154,7 @@ function fill(t, n) {
 }
 
 // Links para o CRM: "Entrar" vai direto para a tela de login
-document.querySelectorAll("[data-login]").forEach(function (a) { a.href = "/login"; });
+document.querySelectorAll("[data-login]").forEach(function (a) { a.href = CRM_URL + "/entrar"; });
 document.querySelectorAll("[data-crm]").forEach(function (a) { a.href = CRM_URL + a.getAttribute("data-crm"); });
 
 // ---------------------------------------------------------------------------
