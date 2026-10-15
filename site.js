@@ -487,6 +487,7 @@ function renderCompare() {
     ["Vendas, orçamentos e cobrança pelo WhatsApp", all()],
     ["Dashboard e painel compartilhável com o sócio", all()],
     ["Importar planilha e conversas do WhatsApp", all()],
+    ["Implantação", PLANS.map(function (p) { return p.api ? "assistida (R$ 497)" : "gravada (30 dias)"; })],
     ["Acesso por pessoa, registro de acessos e LGPD", all()]
   ];
   var head = "<tr><th scope=\"col\"><span class=\"sr\">Recurso</span></th>" + PLANS.map(function (p) { return '<th scope="col"' + (p.tag ? ' class="hl"' : "") + ">" + esc(p.name.replace("Magnet ", "")) + "</th>"; }).join("") + "</tr>";
@@ -508,8 +509,10 @@ function renderCredits() {
     '<div class="cr-grid">' +
       '<div class="cr-card"><p class="cr-t">Todo mês, no plano</p><div class="cr-cols">' + cols + "</div><p class=\"cr-d\">Renovam na virada do mês e não acumulam.</p></div>" +
       '<div class="cr-card"><p class="cr-t">Bônus por pagar em dia</p><div class="cr-cols">' + bon + "</div><p class=\"cr-d\">Pagou até o vencimento, ganha os créditos a mais até o próximo vencimento.</p></div>" +
-      '<div class="cr-card key"><p class="cr-t">Acabou? O atendimento não para</p><p class="cr-big">Conecte a sua própria chave de IA</p><p class="cr-d">Em Ajustes, você liga a sua chave e a IA segue respondendo na hora, sem gastar créditos do plano e sem pagar nada a mais para a gente.</p></div>' +
-    "</div>";
+      '<div class="cr-card key"><p class="cr-t">Acabou? Recarregue na hora</p><ul class="cr-packs"><li><b>+1.000</b><span>R$ 19,90</span></li><li><b>+3.000</b><span>R$ 49,90</span></li><li><b>+10.000</b><span>R$ 149,90</span></li></ul><p class="cr-d">Compra dentro do CRM, por Pix, cartão ou boleto. Os créditos entram assim que o pagamento cai e valem até a virada do mês. Ou conecte a sua própria chave de IA e use sem limite de créditos.</p></div>' +
+    "</div>" +
+    '<div class="setup"><div class="setup-card"><p class="cr-t">Implantação gravada · Start e Pro</p><p class="cr-big">Incluída no plano</p><p class="cr-d">Vídeos curtos, passo a passo, para conectar o WhatsApp, montar o funil e ligar a IA. Acesso por 30 dias depois da compra.</p></div>' +
+    '<div class="setup-card gold"><p class="cr-t">Implantação assistida · Gold e Black</p><p class="cr-big">R$ 497 <small>pagamento único</small></p><p class="cr-d">Online, com hora marcada: a gente configura com você o funil, as mensagens prontas e os números de WhatsApp.</p></div></div>';
 }
 
 // Assinar: vai direto para o pagamento do período escolhido
@@ -596,7 +599,8 @@ function renderFaq() {
     ["Como recebo o acesso depois de pagar?", "Assim que o Asaas confirma o pagamento, você recebe um link pessoal para criar a sua conta. No Pix e no cartão costuma levar poucos minutos. No boleto, até o banco compensar."],
     ["Quantas pessoas da equipe podem usar?", "Depende do plano: " + list(users) + " usuários. Cada pessoa tem o próprio login e vê só o que o administrador liberar. Não há cobrança extra por usuário dentro do limite do plano. Se a equipe crescer, você muda de plano dentro do próprio CRM, em Planos e upgrade."],
     ["Mensal ou anual: qual a diferença?", "Os recursos são os mesmos. No anual você paga uma vez por ano e economiza " + minAnnualOff() + "%. No mensal a cobrança é todo mês."],
-    ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente, e você pode conectar a sua própria chave de IA em Ajustes para a IA seguir respondendo sem gastar créditos do plano."],
+    ["O que são os créditos de IA?", "Cada resposta ou análise feita pela IA usa 1 crédito. Todo mês o plano traz: " + list(ai) + " créditos. Pagando a assinatura até o vencimento, você ganha créditos a mais até o próximo vencimento: " + list(bonus) + ". Se os créditos acabarem, o CRM continua funcionando normalmente: dá para comprar uma recarga na hora (+1.000 por R$ 19,90, +3.000 por R$ 49,90 ou +10.000 por R$ 149,90, válidos até a virada do mês) ou conectar a sua própria chave de IA em Ajustes para a IA seguir respondendo sem gastar créditos do plano."],
+    ["Como funciona a implantação?", "Nos planos Start e Pro, a implantação é gravada: vídeos curtos, passo a passo, com acesso por 30 dias. Nos planos Gold e Black, você pode contratar a implantação assistida (R$ 497, pagamento único): online, com hora marcada, configuramos com você o funil, as mensagens prontas e os números de WhatsApp."],
     ["Preciso da API oficial do WhatsApp?", "Não. Você conecta o seu número pelo QR Code, como no WhatsApp Web, em poucos minutos. Cada plano tem a sua quantidade de números: Start 1, Pro 2, Gold e Black 3, cada um com um nome, como Recepção ou Financeiro. A API oficial da Meta vai chegar nos planos Gold e Black."],
     [fill("A IA responde sozinha para os meus {cs}?", n), "Só se você ligar. Você escolhe os horários e até onde ela vai (tirar dúvidas, fazer o primeiro atendimento ou também agendar), e ela para de responder quando alguém da equipe assume a conversa."],
     [fill("Consigo trazer os meus {cs} de outro sistema?", n), fill("Sim. Você importa uma planilha (do Excel, do Google Planilhas ou exportada de outro CRM) com os seus {cs}, já no funil e na etapa certa, e também a lista dos seus serviços com os valores.", n)],

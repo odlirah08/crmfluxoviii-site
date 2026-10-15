@@ -666,3 +666,13 @@ footer .wrap{display:grid;gap:22px}
 .compare .zero{display:inline-block;padding:3px 9px;border-radius:999px;font-weight:800;font-size:13px;color:#0f7a4a;background:color-mix(in srgb,#16a34a 14%,transparent);white-space:nowrap}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .compare .zero{color:#6ee7a8}}
 :root[data-theme="dark"] .compare .zero{color:#6ee7a8}
+
+.cr-packs{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cr-packs li{display:flex;justify-content:space-between;align-items:baseline;padding:6px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+.cr-packs b{font-family:var(--display);font-size:16px}
+.cr-packs span{font-weight:700}
+.setup{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.setup-card{display:grid;gap:8px;align-content:start;padding:20px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line)}
+.setup-card.gold{border:2px solid var(--gold)}
+.setup-card .cr-big small{font-size:13px;font-weight:600;color:var(--muted);margin-left:6px}
+@media (max-width:800px){.setup{grid-template-columns:minmax(0,1fr)}}
