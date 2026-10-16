@@ -411,6 +411,7 @@ function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 
 var cycle = store.get("fluxo-ciclo") === "mensal" ? "mensal" : "anual";
 var MAX_FUNNELS = { start: "3", pro: "6", gold: "20", black: "50" };
+var MAX_FORMS = { start: 10, pro: 25, gold: 50, black: 100 };
 function linesText(p) { return p.lines + (p.lines === 1 ? " número" : " números") + " de WhatsApp"; }
 var maxUsers = function (p) { return Number((p.users.match(/\d+/) || [1])[0]); };
 var maxAdmins = function (p) { return Number(((p.users.match(/\((\d+)/) || [0, 1])[1])); };
@@ -434,7 +435,7 @@ function renderPlans() {
       '<p class="who">' + esc(who[i]) + "</p>" +
       '<div class="price"><span class="cur">R$</span><span class="val">' + brl(price) + '</span><span class="per">/mês</span></div>' + sub +
       '<p class="pp">Sai a <strong>R$ ' + brl(price / maxUsers(p)) + "</strong> por pessoa com a equipe completa</p>" +
-      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + linesText(p) + " (QR Code)</li><li>Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)</li>" + (p.api ? "<li>API oficial do WhatsApp (em breve)</li>" : "") + "<li>Todos os recursos do FLUXO VIII</li></ul>" +
+      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + linesText(p) + " (QR Code)</li><li>Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)</li><li>Até " + MAX_FORMS[p.id] + " fichas (formulários com link)</li>" + (p.api ? "<li>API oficial do WhatsApp (em breve)</li>" : "") + "<li>Todos os recursos do FLUXO VIII</li></ul>" +
       '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + (annual ? " anual" : " mensal") + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + (annual ? " anual" : " mensal") + "</button>" +
       "</article>";
   }).join("");
@@ -481,6 +482,7 @@ function renderCompare() {
     ["Resumo e análise da conversa pela IA", all()],
     ["Funil e atendimento"],
     ["Funis (ex.: Vendas, CS)", PLANS.map(function (p) { return MAX_FUNNELS[p.id]; })],
+    ["Fichas (formulários com link)", PLANS.map(function (p) { return String(MAX_FORMS[p.id]); })],
     ["Card criado sozinho no CS quando a venda é ganha", all()],
     ["Números de WhatsApp (QR Code)", PLANS.map(function (p) { return String(p.lines); })],
     ["API oficial do WhatsApp (Meta)", PLANS.map(function (p) { return p.api ? "em breve" : "—"; })],
@@ -505,19 +507,62 @@ function renderCompare() {
     '<div class="compare-scroll" tabindex="0" role="region" aria-label="Tabela comparativa dos planos"><table class="compare"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
 }
 
+var creditPlan = "pro";
+var CREDIT_PACKS = [
+  { n: 1000, price: 19.90 },
+  { n: 3000, price: 49.90 },
+  { n: 10000, price: 149.90, best: true }
+];
 function renderCredits() {
   if (!$("credits")) return;
-  var cols = PLANS.map(function (p) { return '<span><small>' + esc(p.name.replace("Magnet ", "")) + "</small><b>" + (p.ai.match(/[\d.]+/) || [""])[0] + "</b></span>"; }).join("");
-  var bon = PLANS.map(function (p) { return '<span><small>' + esc(p.name.replace("Magnet ", "")) + "</small><b>+" + p.bonus.toLocaleString("pt-BR") + "</b></span>"; }).join("");
+  var p = PLANS.filter(function (x) { return x.id === creditPlan; })[0] || PLANS[1];
+  var base = Number(((p.ai.match(/[\d.]+/) || ["0"])[0]).replace(/\./g, ""));
+  var total = base + p.bonus;
+  var perDay = Math.floor(total / 30);
+  var basePct = Math.round((base / total) * 100);
+  var chips = PLANS.map(function (x) {
+    return '<button type="button" class="crx-chip' + (x.id === creditPlan ? " on" : "") + '" data-cplan="' + x.id + '" aria-pressed="' + (x.id === creditPlan) + '">' + esc(x.name.replace("Magnet ", "")) + "</button>";
+  }).join("");
+  var ref = CREDIT_PACKS[0].price / CREDIT_PACKS[0].n;
+  var packs = CREDIT_PACKS.map(function (k) {
+    var perK = (k.price / k.n) * 1000;
+    var save = Math.round((1 - k.price / k.n / ref) * 100);
+    return '<li class="crx-pack' + (k.best ? " best" : "") + '">' + (k.best ? '<span class="crx-badge">Melhor preço</span>' : "") +
+      '<b>+' + k.n.toLocaleString("pt-BR") + '</b><span class="crx-price">R$ ' + brl(k.price) + "</span>" +
+      '<small>R$ ' + brl(perK) + " a cada 1.000" + (save > 0 ? " · " + save + "% mais barato" : "") + "</small></li>";
+  }).join("");
   $("credits").innerHTML =
-    '<div class="head"><p class="kicker">Créditos de IA</p><h3>Como funcionam os créditos</h3><p>Cada resposta ou análise da IA usa 1 crédito. Documentos e envios em lote usam 5.</p></div>' +
-    '<div class="cr-grid">' +
-      '<div class="cr-card"><p class="cr-t">Todo mês, no plano</p><div class="cr-cols">' + cols + "</div><p class=\"cr-d\">Renovam na virada do mês e não acumulam.</p></div>" +
-      '<div class="cr-card"><p class="cr-t">Bônus por pagar em dia</p><div class="cr-cols">' + bon + "</div><p class=\"cr-d\">Pagou até o vencimento, ganha os créditos a mais até o próximo vencimento.</p></div>" +
-      '<div class="cr-card key"><p class="cr-t">Acabou? Recarregue na hora</p><ul class="cr-packs"><li><b>+1.000</b><span>R$ 19,90</span></li><li><b>+3.000</b><span>R$ 49,90</span></li><li><b>+10.000</b><span>R$ 149,90</span></li></ul><p class="cr-d">Compra dentro do CRM, por Pix, cartão ou boleto. Os créditos entram assim que o pagamento cai e valem até a virada do mês. Ou conecte a sua própria chave de IA e use sem limite de créditos.</p></div>' +
+    '<div class="head"><p class="kicker">Créditos de IA</p><h3>Sua IA atendendo o mês inteiro</h3><p>1 crédito = 1 resposta ou análise da IA. Ler documento ou enviar em lote usa 5.</p></div>' +
+    '<div class="crx">' +
+      '<div class="crx-main">' +
+        '<div class="crx-chips" role="group" aria-label="Escolha o plano">' + chips + "</div>" +
+        '<p class="crx-total"><b>' + total.toLocaleString("pt-BR") + '</b> créditos por mês</p>' +
+        '<p class="crx-sub">no ' + esc(p.name.replace("Magnet ", "")) + ", pagando em dia · cerca de <b>" + perDay.toLocaleString("pt-BR") + " respostas da IA por dia</b></p>" +
+        '<div class="crx-bar" role="img" aria-label="' + base.toLocaleString("pt-BR") + " do plano mais " + p.bonus.toLocaleString("pt-BR") + ' de bônus"><span class="crx-b1" style="width:' + basePct + '%"></span><span class="crx-b2" style="width:' + (100 - basePct) + '%"></span></div>' +
+        '<div class="crx-legend">' +
+          '<span><i class="crx-d1"></i><span><b>' + base.toLocaleString("pt-BR") + "</b> do plano<small>Renovam na virada do mês</small></span></span>" +
+          '<span><i class="crx-d2"></i><span><b>+' + p.bonus.toLocaleString("pt-BR") + "</b> de bônus<small>Pagou até o vencimento, ganhou</small></span></span>" +
+        "</div>" +
+      "</div>" +
+      '<div class="crx-side">' +
+        '<p class="cr-t">Acabou? Recarregue na hora</p>' +
+        '<ul class="crx-packs">' + packs + "</ul>" +
+        '<p class="cr-d">Dentro do CRM, por Pix, cartão ou boleto. Entra assim que o pagamento cai e vale até a virada do mês.</p>' +
+      "</div>" +
     "</div>" +
+    '<p class="crx-own"><b>Sem limite:</b> conecte a sua própria chave de IA em Ajustes e a IA responde sem gastar créditos. Se os créditos acabarem, o CRM continua funcionando normalmente.</p>' +
     '<div class="setup"><div class="setup-card"><p class="cr-t">Implantação gravada · Start e Pro</p><p class="cr-big">Incluída no plano</p><p class="cr-d">Vídeos curtos, passo a passo, para conectar o WhatsApp, montar o funil e ligar a IA. Acesso por 30 dias depois da compra.</p></div>' +
     '<div class="setup-card gold"><p class="cr-t">Implantação assistida · Gold e Black</p><p class="cr-big">R$ 497 <small>pagamento único</small></p><p class="cr-d">Online, com hora marcada: a gente configura com você o funil, as mensagens prontas e os números de WhatsApp.</p><a class="btn gold" href="https://www.asaas.com/000/c/aoanuzgb2elwwbwg" target="_blank" rel="noopener" style="justify-self:start">Contratar a implantação</a></div></div>';
+}
+if ($("credits")) {
+  $("credits").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-cplan]");
+    if (!b || b.dataset.cplan === creditPlan) return;
+    creditPlan = b.dataset.cplan;
+    renderCredits();
+    var nb = $("credits").querySelector('button[data-cplan="' + creditPlan + '"]');
+    if (nb) nb.focus();
+  });
 }
 
 // Assinar: vai direto para o pagamento do período escolhido
