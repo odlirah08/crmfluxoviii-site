@@ -412,6 +412,7 @@ function minAnnualOff() { return Math.min.apply(null, PLANS.map(annualOff)); }
 var cycle = store.get("fluxo-ciclo") === "mensal" ? "mensal" : "anual";
 var MAX_FUNNELS = { start: "3", pro: "6", gold: "20", black: "50" };
 var MAX_FORMS = { start: 10, pro: 25, gold: 50, black: 100 };
+var AI_AGENTS = { start: "1 agente de IA comercial", pro: "1 agente de IA comercial", gold: "2 agentes de IA comerciais + 1 de CS", black: "3 agentes de IA comerciais + 2 de CS/Financeiro" };
 function linesText(p) { return p.lines + (p.lines === 1 ? " número" : " números") + " de WhatsApp"; }
 var maxUsers = function (p) { return Number((p.users.match(/\d+/) || [1])[0]); };
 var maxAdmins = function (p) { return Number(((p.users.match(/\((\d+)/) || [0, 1])[1])); };
@@ -435,7 +436,7 @@ function renderPlans() {
       '<p class="who">' + esc(who[i]) + "</p>" +
       '<div class="price"><span class="cur">R$</span><span class="val">' + brl(price) + '</span><span class="per">/mês</span></div>' + sub +
       '<p class="pp">Sai a <strong>R$ ' + brl(price / maxUsers(p)) + "</strong> por pessoa com a equipe completa</p>" +
-      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + linesText(p) + " (QR Code)</li><li>Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)</li><li>Até " + MAX_FORMS[p.id] + " fichas (formulários com link)</li>" + (p.api ? "<li>API oficial do WhatsApp (em breve)</li>" : "") + "<li>Todos os recursos do FLUXO VIII</li></ul>" +
+      "<ul><li>" + esc(p.users) + "</li><li>" + esc(p.ai) + "</li><li>+" + p.bonus.toLocaleString("pt-BR") + " créditos de IA por mês pagando até o vencimento</li><li>" + linesText(p) + " (QR Code)</li><li>Até " + MAX_FUNNELS[p.id] + " funis (ex.: Vendas e CS)</li><li>Até " + MAX_FORMS[p.id] + " fichas (formulários com link)</li><li>" + AI_AGENTS[p.id] + "</li>" + (p.api ? "<li>API oficial do WhatsApp (em breve)</li>" : "") + "<li>Todos os recursos do FLUXO VIII</li></ul>" +
       '<button type="button" class="btn ' + (p.tag ? "gold" : "solid") + '" data-plan="' + p.id + '" aria-label="Assinar ' + esc(p.name) + (annual ? " anual" : " mensal") + '">Assinar o ' + esc(p.name.replace("Magnet ", "")) + (annual ? " anual" : " mensal") + "</button>" +
       "</article>";
   }).join("");
@@ -484,6 +485,7 @@ function renderCompare() {
     ["Funil e atendimento"],
     ["Funis (ex.: Vendas, CS)", PLANS.map(function (p) { return MAX_FUNNELS[p.id]; })],
     ["Fichas (formulários com link)", PLANS.map(function (p) { return String(MAX_FORMS[p.id]); })],
+    ["Agentes de IA (comercial + CS)", PLANS.map(function (p) { return { start: "1", pro: "1", gold: "2 + 1", black: "3 + 2" }[p.id]; })],
     ["Card criado sozinho no CS quando a venda é ganha", all()],
     ["Números de WhatsApp (QR Code)", PLANS.map(function (p) { return String(p.lines); })],
     ["API oficial do WhatsApp (Meta)", PLANS.map(function (p) { return p.api ? "em breve" : "—"; })],
