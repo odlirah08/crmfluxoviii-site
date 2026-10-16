@@ -595,6 +595,8 @@ table.compare{width:100%;min-width:640px;border-collapse:collapse;font-size:15px
 .in-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--ink) 4%,var(--surface))}
 .in-bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
 .in-bar span{margin-left:8px;font-size:12px;color:var(--muted)}
+.in-media{min-width:0}
+.in-hint{display:none;margin:8px 0 0;font-size:13px;color:var(--muted);text-align:center}
 .in-shot img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top left;background:#f5f5f4}
 
 /* Rodapé */
@@ -610,7 +612,7 @@ footer .wrap{display:grid;gap:22px}
 
 @media (max-width:900px){
   .in-panel{grid-template-columns:minmax(0,1fr)}
-  .in-shot{order:-1}
+  .in-media{order:-1}
   .cr-grid{grid-template-columns:minmax(0,1fr)}
   .per-user{grid-template-columns:1fr}
   .pu-vs{justify-self:center}
@@ -733,3 +735,116 @@ footer .wrap{display:grid;gap:22px}
 .crx-own b{color:var(--ink)}
 @media (max-width:860px){.crx{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:420px){.crx-legend{grid-template-columns:1fr}.crx-main,.crx-side{padding:18px}}
+
+/* ===== Celular ===== */
+/* Botão do menu (aparece quando a navegação do topo some) */
+.menu-btn{display:none;flex:none;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.m-menu{position:absolute;left:0;right:0;top:100%;max-height:calc(100dvh - 64px);overflow-y:auto;overscroll-behavior:contain;padding:12px 20px 24px;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 30px 40px -30px rgba(11,31,74,.45)}
+.m-menu[hidden]{display:none}
+.m-links{display:grid}
+.m-links a{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 4px;border-bottom:1px solid var(--line);font-weight:700;font-size:17px;text-decoration:none;color:var(--ink)}
+.m-links a::after{content:"›";font-family:var(--display);color:var(--gold-ink);font-size:20px}
+.m-k{margin:18px 0 10px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink)}
+.m-niches{display:flex;flex-wrap:wrap;gap:8px}
+.m-niches a{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14.5px;font-weight:600;text-decoration:none;color:var(--ink)}
+.m-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:20px}
+.m-actions .btn{min-height:50px;padding:0 12px;text-align:center}
+@media (max-width:980px){.menu-btn{display:inline-flex}.top .wrap{gap:10px}}
+@media (max-width:600px){.top-actions [data-login]{display:none}}
+@media (max-width:380px){.top .btn{font-size:13px;padding:0 12px}.brand img{height:26px}}
+
+/* Comparativo recolhido */
+.cmp-toggle{display:none}
+.car-dots{display:none}
+.m-cta{display:none}
+
+@media (max-width:720px){
+  body{font-size:16px}
+  section{padding-block:52px}
+  .head{margin-bottom:24px}
+  .head p{margin-top:10px}
+  .wrap{padding-inline:16px}
+
+  /* Herói: título primeiro, áreas e destaques em rolagem lateral */
+  .hero{padding-block:24px 8px}
+  .hero .wrap{gap:4px}
+  .hero .wrap > div:first-child{display:flex;flex-direction:column}
+  .hero h1{order:1;font-size:clamp(34px,10.4vw,44px);line-height:1.04}
+  .hero .lead{order:2;margin-top:14px;font-size:16.5px;line-height:1.5}
+  .hero .ctas{order:3;margin-top:20px;display:grid;grid-template-columns:1fr;gap:10px}
+  .hero .ctas .btn{min-height:50px}
+  .hero .ctas .link{grid-column:1/-1;justify-self:center;margin:2px 0 0}
+  .hero-note{order:4;margin-top:12px}
+  .picker{order:5;margin:20px 0 0}
+  .picker p{margin-bottom:8px;font-size:13px}
+  .facts{order:6;margin-top:14px}
+  .chips,.facts{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;margin-inline:-16px;padding:2px 16px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .chips::-webkit-scrollbar,.facts::-webkit-scrollbar{display:none}
+  .chips button,.facts li{flex:none;white-space:nowrap;scroll-snap-align:start}
+  .field{max-width:290px;margin:4px auto 0}
+  .chip{font-size:11.5px;padding:4px 9px}
+  .toast{padding:6px 10px}
+  .hud{display:none}
+
+  /* Carrosséis horizontais */
+  .leaks,.case-list,.obj-list,.plans,.edge,.flow,.pillars,.testi-list{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:-16px;padding:4px 16px 8px;scroll-padding-inline:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .leaks::-webkit-scrollbar,.case-list::-webkit-scrollbar,.obj-list::-webkit-scrollbar,.plans::-webkit-scrollbar,.edge::-webkit-scrollbar,.flow::-webkit-scrollbar,.pillars::-webkit-scrollbar,.testi-list::-webkit-scrollbar{display:none}
+  .leaks > *,.case-list > *,.obj-list > *,.plans > *,.edge > *,.flow > *,.pillars > *,.testi-list > *{flex:0 0 84%;max-width:340px;scroll-snap-align:start;grid-column:auto!important}
+  .plans > *{flex-basis:86%}
+  .plans{align-items:stretch}
+  .car-dots{display:flex;justify-content:center;gap:6px;margin-top:6px}
+  .car-dots i{width:7px;height:7px;border-radius:99px;background:var(--line);transition:width .2s ease,background .2s ease}
+  .car-dots i.on{width:20px;background:var(--gold)}
+  .story .car-dots i{background:rgba(233,238,248,.2)}
+  .story .car-dots i.on{background:#D9AE55}
+  .edge{margin:0 -16px 10px}
+  .edge + .car-dots{margin:-2px 0 22px}
+
+  /* Linha do tempo vira carrossel */
+  .flow::before{display:none}
+  .flow .node{opacity:1;transform:none;padding:0}
+  .flow .node .dot{display:none}
+  .flow .node-card{height:100%}
+
+  /* Comparativo: botão para abrir */
+  .compare-wrap,.credits{margin-top:40px}
+  .cmp-toggle{display:flex;width:100%;margin-top:16px}
+  .compare-wrap:not(.open) .compare-scroll{display:none}
+  table.compare{min-width:560px;font-size:14px}
+  .compare th,.compare td{padding:10px 12px}
+  .compare tbody th[scope="row"],.compare thead th:first-child{position:sticky;left:0;z-index:1;background:var(--surface);min-width:150px;max-width:170px;box-shadow:1px 0 0 var(--line)}
+  .compare thead th:first-child{z-index:2}
+
+  /* Outros ajustes */
+  .about-quote{min-height:0;padding:28px 24px}
+  .about-quote .sign{max-width:none}
+  .pillars{margin-top:28px}
+  .story-cta,.how-cta{padding:20px}
+  .story-cta .cta-actions,.how-cta .cta-actions,.hook .cta-actions{display:grid;grid-template-columns:1fr;width:100%}
+  .in-panel{gap:18px}
+  .in-text .btn{width:100%}
+  .in-shot.pan .in-zoom{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .in-shot.pan .in-zoom::-webkit-scrollbar{display:none}
+  .in-shot.pan img{width:180%;max-width:none}
+  .in-hint{display:block}
+  .vault{padding:18px;gap:16px}
+  .faq summary{font-size:16.5px}
+  .contact{gap:24px}
+  footer{padding-bottom:40px}
+  html.has-mcta footer{padding-bottom:110px}
+
+  /* Barra fixa de ações */
+  .m-cta{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;position:fixed;z-index:30;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);box-shadow:0 -12px 30px -20px rgba(11,31,74,.45);
+    transform:translateY(110%);transition:transform .25s ease;visibility:hidden}
+  .m-cta.on{transform:none;visibility:visible}
+  .m-cta .btn{min-height:46px;padding:0 8px;font-size:clamp(13px,3.7vw,14.5px);white-space:nowrap}
+  .incl{gap:8px}
+  .incl li{font-size:13.5px;padding:6px 12px}
+}
+@media (max-width:720px) and (prefers-reduced-motion: reduce){.m-cta,.car-dots i,.menu-btn span{transition:none}}
+html.menu-open{overflow:hidden}

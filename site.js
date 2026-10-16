@@ -462,6 +462,7 @@ function renderPerUser() {
     '<p class="pu-note">Exemplo com uma equipe de ' + team + " pessoas e um CRM que cobra R$ " + PER_SEAT.toLocaleString("pt-BR") + " por usuário por mês (e o agente de IA costuma ser cobrado à parte). Aqui a equipe e a IA já estão no preço do plano.</p>";
 }
 
+var compareOpen = false;
 function renderCompare() {
   if (!$("compare")) return;
   var yes = '<span class="yes" aria-label="sim">✓</span>';
@@ -502,9 +503,11 @@ function renderCompare() {
     if (r.length === 1) return '<tr class="grp"><th colspan="' + (PLANS.length + 1) + '" scope="colgroup">' + esc(r[0]) + "</th></tr>";
     return '<tr><th scope="row">' + esc(r[0]) + "</th>" + r[1].map(function (v, i) { return "<td" + (PLANS[i].tag ? ' class="hl"' : "") + ">" + (v.indexOf("<span") === 0 ? v : esc(v)) + "</td>"; }).join("") + "</tr>";
   }).join("");
+  $("compare").classList.toggle("open", compareOpen);
   $("compare").innerHTML =
     '<div class="head"><p class="kicker">Comparativo completo</p><h3>Tudo que entra em cada plano</h3><p>Sem letra miúda: linha por linha, o que muda de um plano para o outro.</p></div>' +
-    '<div class="compare-scroll" tabindex="0" role="region" aria-label="Tabela comparativa dos planos"><table class="compare"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
+    '<button type="button" class="btn cmp-toggle" aria-expanded="' + compareOpen + '" aria-controls="compare-table">' + (compareOpen ? "Esconder comparativo" : "Ver comparativo completo") + "</button>" +
+    '<div class="compare-scroll" id="compare-table" tabindex="0" role="region" aria-label="Tabela comparativa dos planos"><table class="compare"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
 }
 
 var creditPlan = "pro";
@@ -596,12 +599,12 @@ if ($("cycle-switch")) {
 // ---------------------------------------------------------------------------
 // Veja por dentro: telas reais do CRM em abas
 var INSIDE = [
-  ["funil", "Funil", "Cada contato vira um card e anda pelas etapas", ["Arraste o card de etapa em etapa e veja onde cada negócio está.", "Etiquetas, valor, última mensagem e o índice de conexão no próprio card.", "Funis separados para Vendas e CS, cada um com as suas etapas."]],
+  ["funil", "Funil", "Cada contato vira um card e anda pelas etapas", ["Arraste o card de etapa em etapa e veja onde cada negócio está.", "Produtos e valor no próprio card, e o total em aberto em cada etapa.", "No topo, quanto está em aberto, quanto foi ganho e quanto foi perdido."]],
   ["conversas", "Conversas", "WhatsApp e Instagram numa tela só", ["Todas as conversas da equipe, com quem está atendendo cada uma.", "Aviso de atraso quando alguém espera resposta há tempo demais.", "A IA resume a conversa e sugere o próximo passo."]],
-  ["historico", "Histórico do cliente", "Tudo o que aconteceu com cada pessoa", ["Mensagens, anotações, vendas e agendamentos numa linha do tempo.", "Contato, origem, interesse e responsável sempre à vista.", "Lance a venda ou marque o retorno dali mesmo."]],
+  ["historico", "Histórico do cliente", "Tudo o que aconteceu com cada pessoa", ["Responsável, etapa, status e produtos do card logo no topo.", "Anotações, mensagens, vendas e agendamentos numa linha do tempo.", "Lance a venda ou marque o retorno dali mesmo."]],
   ["agenda", "Agenda", "Horários que se organizam sozinhos", ["Agenda ligada ao Google Agenda e link com a videochamada.", "Lembrete automático pelo WhatsApp na véspera.", "Link público para o cliente escolher o horário."]],
   ["painel", "Painel", "Os números do negócio sem planilha", ["Faturamento, vendas, conversão e tempo de resposta do período.", "Comparação com o período anterior e meta do mês.", "Painel compartilhável com o sócio por link."]],
-  ["automacao", "Automação", "Venda ganha, pós-venda começa", ["Quando o card vira Ganho, o card do CS nasce sozinho.", "Cada funil com o seu time e o seu número de WhatsApp.", "Quem vê cada funil é você quem decide."]]
+  ["automacao", "Automação", "Venda ganha, pós-venda começa sozinho", ["Marcou o card como Ganho? O card do pós-venda nasce sozinho no funil do CS.", "Ele já chega em Boas-vindas, com produto, valor e a origem da venda.", "Cada funil com o seu time e o seu número de WhatsApp."]]
 ];
 var insideOn = "funil";
 function renderInside() {
@@ -614,7 +617,7 @@ function renderInside() {
   $("in-panel").setAttribute("aria-labelledby", "in-tab-" + t[0]);
   $("in-panel").innerHTML =
     '<div class="in-text"><h3>' + esc(t[2]) + "</h3><ul>" + t[3].map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul><a class="btn gold" href="#planos">Quero usar no meu negócio</a></div>' +
-    '<figure class="in-shot"><div class="in-bar" aria-hidden="true"><i></i><i></i><i></i><span>FLUXO VIII CRM</span></div><img src="img/crm-' + t[0] + '.webp" alt="Tela de ' + esc(t[1]) + ' do FLUXO VIII com dados de exemplo" loading="lazy" decoding="async"></figure>';
+    '<div class="in-media"><figure class="in-shot' + (t[0] === "automacao" ? "" : " pan") + '"><div class="in-bar" aria-hidden="true"><i></i><i></i><i></i><span>FLUXO VIII CRM</span></div><div class="in-zoom"><img src="img/crm-' + t[0] + '.webp" width="1600" height="1000" alt="' + (t[0] === "automacao" ? "Automação do FLUXO VIII: a venda marcada como Ganho no funil Vendas cria sozinha o card do cliente no funil CS · Pós-venda, na etapa Boas-vindas" : "Tela de " + esc(t[1]) + " do FLUXO VIII com dados de exemplo") + '" loading="lazy" decoding="async"></div></figure>' + (t[0] === "automacao" ? "" : '<p class="in-hint" aria-hidden="true">Arraste a imagem para ver a tela inteira</p>') + "</div>";
 }
 if ($("in-tabs")) {
   $("in-tabs").addEventListener("click", function (e) {
@@ -956,4 +959,123 @@ if (form) {
   }
   show();
   if (!reduce) setInterval(show, 2800);
+})();
+
+// ===== Celular: menu, comparativo recolhido, carrosséis e barra fixa de ações =====
+(function () {
+  var mq = window.matchMedia ? window.matchMedia("(max-width: 720px)") : { matches: false, addEventListener: function () {} };
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var go = function (subject) {
+    if (hasSubjectForm) goContact(subject);
+    else location.href = "/?assunto=" + subject + "#contato";
+  };
+
+  // Menu do celular (a navegação do topo some abaixo de 980px)
+  var top = document.querySelector("header.top .wrap"), nav = document.querySelector("header.top .nav");
+  if (top && nav) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "menu-btn";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "m-menu");
+    btn.setAttribute("aria-label", "Abrir menu");
+    btn.innerHTML = '<span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>';
+    top.appendChild(btn);
+    var links = Array.prototype.filter.call(nav.children, function (el) { return el.tagName === "A"; });
+    var niches = document.querySelectorAll("#dd-niches a[data-dd]");
+    var panel = document.createElement("div");
+    panel.className = "m-menu";
+    panel.id = "m-menu";
+    panel.hidden = true;
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", "Menu");
+    panel.innerHTML =
+      '<nav class="m-links" aria-label="Seções">' + links.map(function (a) { return '<a href="' + esc(a.getAttribute("href")) + '">' + esc(a.textContent) + "</a>"; }).join("") + "</nav>" +
+      (niches.length ? '<p class="m-k">Para quem é</p><div class="m-niches">' + Array.prototype.map.call(niches, function (a) { return '<a href="' + esc(a.getAttribute("href")) + '" data-dd="' + esc(a.dataset.dd) + '">' + esc(a.querySelector("b").textContent) + "</a>"; }).join("") + "</div>" : "") +
+      '<div class="m-actions"><a class="btn" href="' + CRM_URL + '/entrar">Entrar</a><a class="btn gold" href="/?assunto=demonstracao#contato" data-m-subject="demonstracao">Agendar demonstração</a></div>';
+    document.querySelector("header.top").appendChild(panel);
+    var openMenu = function (open) {
+      panel.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+      document.documentElement.classList.toggle("menu-open", open);
+      if (open) { var f = panel.querySelector("a"); if (f) f.focus(); }
+    };
+    btn.addEventListener("click", function () { openMenu(panel.hidden); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) { openMenu(false); btn.focus(); } });
+    document.addEventListener("click", function (e) { if (!panel.hidden && !panel.contains(e.target) && !btn.contains(e.target)) openMenu(false); });
+    panel.addEventListener("click", function (e) {
+      var a = e.target.closest("a");
+      if (!a) return;
+      if (a.dataset.mSubject && hasSubjectForm) { e.preventDefault(); openMenu(false); go(a.dataset.mSubject); return; }
+      if (a.dataset.dd && $("niche-chips")) {
+        e.preventDefault(); openMenu(false);
+        renderNiche(a.dataset.dd); store.set("fluxo-area", a.dataset.dd);
+        if ($("inicio")) $("inicio").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+        return;
+      }
+      openMenu(false);
+    });
+    window.addEventListener("resize", function () { if (window.innerWidth > 980 && !panel.hidden) openMenu(false); });
+  }
+
+  // Comparativo: no celular fica recolhido atrás de um botão
+  if ($("compare")) {
+    $("compare").addEventListener("click", function (e) {
+      var b = e.target.closest(".cmp-toggle");
+      if (!b) return;
+      compareOpen = !compareOpen;
+      $("compare").classList.toggle("open", compareOpen);
+      b.setAttribute("aria-expanded", String(compareOpen));
+      b.textContent = compareOpen ? "Esconder comparativo" : "Ver comparativo completo";
+      if (!compareOpen) $("compare").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
+  }
+
+  // Carrosséis do celular: bolinhas mostram em qual card você está
+  var CARS = ["leaks", "case-list", "obj-list", "plans", "flow"];
+  var carEls = CARS.map($).concat(Array.prototype.slice.call(document.querySelectorAll(".edge, .pillars"))).filter(Boolean);
+  function dots(el) {
+    var d = el.nextElementSibling && el.nextElementSibling.classList.contains("car-dots") ? el.nextElementSibling : null;
+    if (!d) { d = document.createElement("div"); d.className = "car-dots"; d.setAttribute("aria-hidden", "true"); el.parentNode.insertBefore(d, el.nextSibling); }
+    var n = el.children.length;
+    if (d.childElementCount !== n) d.innerHTML = new Array(n + 1).join("<i></i>");
+    var w = el.children[0] ? el.children[0].getBoundingClientRect().width : 1;
+    var i = Math.min(n - 1, Math.round(el.scrollLeft / Math.max(1, w)));
+    if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) i = n - 1;
+    Array.prototype.forEach.call(d.children, function (dot, k) { dot.classList.toggle("on", k === i); });
+  }
+  carEls.forEach(function (el) {
+    el.addEventListener("scroll", function () { dots(el); }, { passive: true });
+    dots(el);
+    if ("MutationObserver" in window) new MutationObserver(function () { dots(el); }).observe(el, { childList: true });
+  });
+  window.addEventListener("resize", function () { carEls.forEach(dots); });
+
+  // Barra fixa no rodapé do celular (só nas páginas com os planos)
+  if (!$("planos")) return;
+  var bar = document.createElement("div");
+  bar.className = "m-cta";
+  bar.innerHTML = '<a class="btn gold" href="#planos">Ver planos</a><a class="btn" href="/?assunto=especialista#contato" data-m-subject="especialista">Falar com especialista</a>';
+  document.body.appendChild(bar);
+  bar.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-m-subject]");
+    if (a && hasSubjectForm) { e.preventDefault(); go(a.dataset.mSubject); }
+  });
+  var formSeen = false, heroSeen = true;
+  var heroEl = document.querySelector(".hero") || document.querySelector(".page-head");
+  function sync() {
+    var show = mq.matches && !formSeen && !heroSeen && !document.documentElement.classList.contains("menu-open");
+    bar.classList.toggle("on", show);
+    document.documentElement.classList.toggle("has-mcta", mq.matches);
+  }
+  if ("IntersectionObserver" in window) {
+    var contact = $("contato") || $("lead-form");
+    if (contact) new IntersectionObserver(function (en) { formSeen = en[0].isIntersecting; sync(); }, { rootMargin: "0px 0px -10% 0px" }).observe(contact);
+    if (heroEl) new IntersectionObserver(function (en) { heroSeen = en[0].isIntersecting; sync(); }, { rootMargin: "-40% 0px 0px 0px" }).observe(heroEl);
+    else heroSeen = false;
+  } else heroSeen = false;
+  if (mq.addEventListener) mq.addEventListener("change", sync);
+  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  sync();
 })();
