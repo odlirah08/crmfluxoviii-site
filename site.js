@@ -601,10 +601,11 @@ if ($("cycle-switch")) {
 // ---------------------------------------------------------------------------
 // Veja por dentro: telas reais do CRM em abas
 var INSIDE = [
-  ["funil", "Funil", "Cada contato vira um card e anda pelas etapas", ["Arraste o card de etapa em etapa e veja onde cada negócio está.", "Produtos e valor no próprio card, e o total em aberto em cada etapa.", "No topo, quanto está em aberto, quanto foi ganho e quanto foi perdido."]],
+  ["funil", "Funil", "Cada contato vira um card e anda pelas etapas", ["Arraste o card de etapa em etapa e veja onde cada negócio está.", "Produtos e valor no próprio card, e o total em aberto em cada etapa.", "No topo, o resultado do mês: em aberto, ganho, perdido, conversão e o placar de cada vendedor."]],
   ["conversas", "Conversas", "WhatsApp e Instagram numa tela só", ["Todas as conversas da equipe, com quem está atendendo cada uma.", "Aviso de atraso quando alguém espera resposta há tempo demais.", "A IA resume a conversa e sugere o próximo passo."]],
-  ["historico", "Histórico do cliente", "Tudo o que aconteceu com cada pessoa", ["Responsável, etapa, status e produtos do card logo no topo.", "Anotações, mensagens, vendas e agendamentos numa linha do tempo.", "Lance a venda ou marque o retorno dali mesmo."]],
+  ["historico", "Histórico do cliente", "Tudo o que aconteceu com cada pessoa", ["Valor, produtos, responsável, etapa e status lado a lado, sem procurar.", "Anotações, mensagens, vendas e agendamentos numa linha do tempo.", "Lance a venda ou marque o retorno dali mesmo."]],
   ["agenda", "Agenda", "Horários que se organizam sozinhos", ["Agenda ligada ao Google Agenda e link com a videochamada.", "Lembrete automático pelo WhatsApp na véspera.", "Link público para o cliente escolher o horário."]],
+  ["radar", "Radar", "Ninguém fica esperando resposta", ["Quem está aguardando você, há quanto tempo e por qual canal.", "Follow-ups pendentes e contatos parados há mais de 7 dias.", "Responder agora com um clique, e aviso no celular quando alguém espera demais."]],
   ["painel", "Painel", "Os números do negócio sem planilha", ["Faturamento, vendas, conversão e tempo de resposta do período.", "Comparação com o período anterior e meta do mês.", "Painel compartilhável com o sócio por link."]],
   ["automacao", "Automação", "Venda ganha, pós-venda começa sozinho", ["Marcou o card como Ganho? O card do pós-venda nasce sozinho no funil do CS.", "Ele já chega em Boas-vindas, com produto, valor e a origem da venda.", "Cada funil com o seu time e o seu número de WhatsApp."]]
 ];
